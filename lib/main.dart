@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:liviso_flutter/homeScrn.dart';
 import 'package:liviso_flutter/resetPassword.dart';
 import 'package:liviso_flutter/signup.dart';
+import 'package:liviso_flutter/vCallScreen.dart';
 
 import 'login.dart';
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return const MaterialApp(
            debugShowCheckedModeBanner: false,
-           home: HomeScreen1(),
+           home: VideoCallScreen(),
         );
       }, );
   }
