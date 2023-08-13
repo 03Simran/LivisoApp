@@ -8,14 +8,16 @@ import 'colors.dart';
 //Liviso Logo
 
 class Logo extends StatelessWidget {
-  const Logo({super.key});
+  final double fontSize; // Add a named parameter for font size
+
+   Logo({Key? key, this.fontSize = 44}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Text('LIVISO',
         style:  GoogleFonts.slackey(
           textStyle: TextStyle(
             color: ThemeColors.primaryColor,
-            fontSize: 44.sp,
+            fontSize: 44.sp
           )
         ),
             

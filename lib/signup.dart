@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liviso_flutter/assets/colors.dart';
-import 'package:liviso_flutter/assets/widgets.dart';
+import 'package:liviso_flutter/assets/loginWidgets.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -28,7 +28,7 @@ class _SignUpScreen extends State<SignUpScreen> {
 
             SizedBox(height: 129.h,),
 
-            Logo(),
+            Logo(fontSize: 44.sp,),
 
             SizedBox(height: 52.h,),
 
