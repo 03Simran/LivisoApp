@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:liviso_flutter/resetPassword.dart';
 import 'package:liviso_flutter/signup.dart';
 
 import 'login.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return const MaterialApp(
            debugShowCheckedModeBanner: false,
-           home: SignUpScreen(),
+           home: ResetPassword(),
         );
       }, );
   }
