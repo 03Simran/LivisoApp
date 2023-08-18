@@ -4,7 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:liviso_flutter/widgets/colors.dart';
 
 class VideoCallScreen extends StatefulWidget {
-  const VideoCallScreen({super.key});
+  var incomingCallNo;
+
+  VideoCallScreen(
+      {required this.incomingCallNo,
+      Key? key})
+      : super(key: key);
 
   @override
   State<VideoCallScreen> createState() => _VideoCallScreenState();
@@ -85,7 +90,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                             decoration: BoxDecoration(
                                 color: ThemeColors.backgroundColor,
                                 borderRadius: BorderRadius.circular(10.r)),
-                            child: Text('9999999999',
+                            child: Text(widget.incomingCallNo,
                                 style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
                                         color: ThemeColors.textColor9,

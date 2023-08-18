@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:liviso_flutter/screens/homeScrn.dart';
-import 'package:liviso_flutter/screens/resetPassword.dart';
-import 'package:liviso_flutter/screens/signup.dart';
-import 'package:liviso_flutter/screens/vCallScreen.dart';
-
-import 'screens/login.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp( MyApp(),);
 }
 
 class MyApp extends StatelessWidget {
@@ -22,9 +17,9 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return const MaterialApp(
+        return MaterialApp(
            debugShowCheckedModeBanner: false,
-           home: VideoCallScreen(),
+           home: HomeScreen1(),
         );
       }, );
   }
