@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:liviso_flutter/screens/vCallScreen.dart';
 import 'package:liviso_flutter/widgets/colors.dart';
 import 'package:liviso_flutter/widgets/homeWidgets.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
@@ -20,7 +19,7 @@ class HomeScreen1 extends StatefulWidget {
 
 class _HomeScreen1State extends State<HomeScreen1> {
   bool incomingCall = true;
-  bool livecalling = false;
+  bool livecalling = true;
   final incomingCallNo = '8252645278';
   late final callsData;
 
@@ -82,7 +81,12 @@ class _HomeScreen1State extends State<HomeScreen1> {
                           color: ThemeColors.textColor6))),
               SizedBox(height: 17.h),
               Expanded(
-                child: JsonDataDisplay(),
+                child: SingleChildScrollView(
+                  child: Column(children: [
+                    CallElement(),CallElement(),CallElement(),CallElement(),CallElement(),CallElement(),CallElement(),CallElement(),CallElement(),
+                    CallElement()
+                  ],)
+                ),
               ),
             ],
           ),
@@ -129,13 +133,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  VideoCallScreen(
-                                                      incomingCallNo:
-                                                          incomingCallNo)));
+                                      
                                     },
                                     child: CircleAvatar(
                                       backgroundColor: Colors.green,

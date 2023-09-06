@@ -9,6 +9,8 @@ import 'package:liviso_flutter/widgets/loginWidgets.dart';
 
 
 class SplashScreen extends StatefulWidget{
+  const SplashScreen({super.key});
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -25,12 +27,13 @@ class _SplashScreenState extends State<SplashScreen> {
       ));
     });
   }
+  @override
   Widget build(BuildContext context){
     return Scaffold(
+       
        body: Container(
         color:Colors.blue,
-        
-        // ignore: prefer_const_constructors
+  
         child:Container(
           color: Colors.white,
           child:  Center(child: Logo(fontSize: 100.sp,))

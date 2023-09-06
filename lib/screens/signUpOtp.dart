@@ -4,13 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:liviso_flutter/screens/login.dart';
 import 'package:liviso_flutter/widgets/colors.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
-import 'package:liviso_flutter/widgets/timer.dart';
+import 'package:liviso_flutter/services/timer.dart';
 
 
 class SignUpOtp extends StatefulWidget {
 
-    var phonefromScreen ;
-    SignUpOtp(
+    final phonefromScreen ;
+    const SignUpOtp(
       {required this.phonefromScreen,
       Key? key})
       : super(key: key);
@@ -75,7 +75,7 @@ class _SignUpOtpState extends State<SignUpOtp> {
                           
                     SizedBox(height: 52.h,),
                           
-                    TextHd(text: 'OTP Verification'),
+                    const TextHd(text: 'OTP Verification'),
                           
                     SizedBox(height :58.h),
                           
@@ -120,7 +120,7 @@ class _SignUpOtpState extends State<SignUpOtp> {
                        ))
                         )),
                 
-                        CountdownTimer(),
+                        const CountdownTimer(),
                       ],
                     ),
                 
@@ -132,7 +132,7 @@ class _SignUpOtpState extends State<SignUpOtp> {
                       enabled: true,
                       label:'Join Waitlist',
                       onPressed: (){
-                        if(phoneText.text.toString()!.isEmpty || !RegExp(r'^\+?91?[6789]\d{9}$').hasMatch(phoneText.text.toString()))
+                        if(phoneText.text.toString().isEmpty || !RegExp(r'^\+?91?[6789]\d{9}$').hasMatch(phoneText.text.toString()))
                          { 
                           
                           print('Failure');
@@ -141,8 +141,7 @@ class _SignUpOtpState extends State<SignUpOtp> {
                          else{
                           print(phoneText.text.toString());
                           print('Success');
-                
-                          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => LoginScreen(phonefromotp:phoneText.text.toString() )));
+                 
                          }
                     },),
 

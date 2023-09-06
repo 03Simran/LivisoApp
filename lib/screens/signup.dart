@@ -1,29 +1,35 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:liviso_flutter/screens/signUpOtp.dart';
+import 'package:http/http.dart' as http;
 import 'package:liviso_flutter/widgets/colors.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
+import 'package:liviso_flutter/screens/login.dart';
 
 
 
 class SignUpScreen extends StatefulWidget {
   static final GlobalKey<FormState> phonekey = GlobalKey<FormState>();
 
+  const SignUpScreen({super.key});
+
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+
+  
+  
   final TextEditingController phoneTextController = TextEditingController();
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController nameTextController = TextEditingController();
 
   final RegExp emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
-  final RegExp phoneRegex = RegExp(r'^\+?91?[6789]\d{9}$');
-  final RegExp nameRegex = RegExp(r'^[a-zA-Z- ]+$');
-
-   double gap = 25.h;
+  final RegExp phoneRegex = RegExp(r'^[0-9]{10}$');
+  final RegExp nameRegex = RegExp(r'^[a-zcA-Z- ]+$');
 
    String? validatePhoneNumber(String? value) {
     if (value!.isEmpty || !phoneRegex.hasMatch(value)) {
@@ -54,6 +60,58 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  Future<void> _signup() async {
+    if (SignUpScreen.phonekey.currentState!.validate()) {
+      final String name = nameTextController.text;
+      final String email = emailTextController.text;
+      final String phone = phoneTextController.text;
+
+      final Map<String, dynamic> data = {
+         "name":name,
+    "phone":phone,
+    "email":email
+
+      };
+
+      final String jsonData = jsonEncode(data);
+
+      try {
+        final response = await http.post(
+          Uri.parse('https://liviso.onrender.com/api/v1/auth/register'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonData,
+        );
+
+        if (response.statusCode == 201) {
+          final Map<String, dynamic> responseBody = json.decode(response.body);
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+         const SnackBar(content: Text('Passowrd sent to your email')),
+         );
+
+          print('Sign Up Successful');
+          await Future.delayed(Duration(seconds: 2));
+
+           Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => LoginScreen(phonefromSignup: phone,),
+            ),
+          );
+          
+        } else {
+
+          print('Failed to send profile data. Status code: ${response.body}');
+        }
+      } catch (e) {
+  
+        print('Error sending profile data: $e');
+      }
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,10 +128,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 129.h,),
+                    SizedBox(height: 120.h,),
                     Logo(fontSize: 44.sp,),
                     SizedBox(height: 52.h,),
-                    TextHd(text: 'Become a partner'),
+                    const TextHd(text: 'Become a partner'),
                     SizedBox(height: 58.h),
                     FormFields(
                       label: 'Phone Number',
@@ -82,7 +140,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       controller: phoneTextController,
                       validateFunction: validatePhoneNumber,
                     ),
-                    SizedBox(height: gap,),
+                    SizedBox(height: 20.h,),
                     FormFields(
                       label: 'Email',
                       hint: 'someone@gmail.com',
@@ -90,7 +148,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       controller: emailTextController, 
                       validateFunction: validateEmail,// Create a new controller if needed
                     ),
-                    SizedBox(height: gap),
+                    SizedBox(height: 20.h),
                     FormFields(
                       label: 'Name',
                       hint: 'Your Name',
@@ -108,7 +166,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     fontSize: 16.sp,
                                     color: ThemeColors.primaryColor))),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            
+           Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => LoginScreen(),
+            ) );
+                          },
                           child: Text(
                             'Login',
                             style: GoogleFonts.poppins(
@@ -122,17 +186,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(height: 20.h,),
                     ButtonMain(
                       enabled: true,
-                      label: 'Join Waitlist',
-                      onPressed: () {
-                        if (SignUpScreen.phonekey.currentState!.validate()) {
-                          // Form validation successful, proceed with submission
-                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignUpOtp(phonefromScreen:phoneTextController.text.toString()  )));
-                          }
-                          else{
-                            print('Error validating the key');
-                          }
-                        
-                      },
+                      label: 'Proceed',
+                      onPressed: _signup
+                      
                     ),
 
                     SizedBox(height: 50.h,)

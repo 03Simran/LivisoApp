@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:liviso_flutter/screens/signUpOtp.dart';
+
 import 'package:liviso_flutter/widgets/colors.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
 
 class ResetPassword extends StatefulWidget {
-  var phonefromOtp ;
-    ResetPassword(
+  final phonefromOtp ;
+   const ResetPassword(
       {required this.phonefromOtp,
       Key? key})
       : super(key: key);
@@ -56,7 +56,7 @@ class _ResetPassword extends State<ResetPassword> {
           
               SizedBox(height: 52.h,),
           
-              TextHd(text: 'Reset Password'),
+              const TextHd(text: 'Reset Password'),
           
               SizedBox(height :58.h),
           

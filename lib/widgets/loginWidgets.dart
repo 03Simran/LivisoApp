@@ -7,11 +7,11 @@ import 'package:url_launcher/url_launcher.dart';
 class Logo extends StatelessWidget {
   final double fontSize; // Add a named parameter for font size
 
-  Logo({Key? key, this.fontSize = 44}) : super(key: key);
+  const Logo({Key? key, this.fontSize = 44}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Text(
-      'Livisio',
+      'Liviso',
       style: GoogleFonts.slackey(
           textStyle:
               TextStyle(color: ThemeColors.primaryColor, fontSize: 44.sp)),
@@ -121,7 +121,7 @@ class ButtonMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 310.w,
       height: 50.h,
       child: FloatingActionButton(
