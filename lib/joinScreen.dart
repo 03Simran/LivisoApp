@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:liviso_flutter/api/meeting_api.dart';
 import 'package:liviso_flutter/models/meeting_detail.dart';
-import 'package:liviso_flutter/screens/meeting_page.dart';
+import 'package:liviso_flutter/meeting_page.dart';
 
 class JoinScreen extends StatefulWidget {
   final MeetingDetail meetingDetails;

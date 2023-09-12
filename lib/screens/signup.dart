@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:liviso_flutter/widgets/colors.dart';
+import 'package:liviso_flutter/screens/addprofile.dart';
+import 'package:liviso_flutter/utils/colors.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
 import 'package:liviso_flutter/screens/login.dart';
 
@@ -21,7 +22,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
 
-  
+   late final String user_id;
   
   final TextEditingController phoneTextController = TextEditingController();
   final TextEditingController emailTextController = TextEditingController();
@@ -77,7 +78,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       try {
         final response = await http.post(
-          Uri.parse('https://liviso.onrender.com/api/v1/auth/register'),
+          Uri.parse('https://stealth-zys3.onrender.com/api/v1/auth/register'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -88,15 +89,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
           final Map<String, dynamic> responseBody = json.decode(response.body);
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
-         const SnackBar(content: Text('Passowrd sent to your email')),
+         const SnackBar(content: Text('Password sent to your email')),
          );
 
           print('Sign Up Successful');
-          await Future.delayed(Duration(seconds: 2));
+          user_id= responseBody['userId'];
+          
 
            Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => LoginScreen(phonefromSignup: phone,),
+              builder: (context) => AddProfileScrn(id: user_id,),
             ),
           );
           
@@ -109,7 +111,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         print('Error sending profile data: $e');
       }
     }
-  }
+  }    
 
 
   @override

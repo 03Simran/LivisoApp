@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "605081071529",
+    "project_id": "livisonotifications",
+    "storage_bucket": "livisonotifications.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:605081071529:android:356b2ce319c15c340e5eb8",
+        "android_client_info": {
+          "package_name": "com.stealth.liviso_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEo_kE6XFRmLxdzvP6mZkql6IY7kI-nKA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

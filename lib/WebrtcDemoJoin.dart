@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:liviso_flutter/api/meeting_api.dart';
 import 'package:liviso_flutter/models/meeting_detail.dart';
-import 'package:liviso_flutter/screens/joinScreen.dart';
+import 'package:liviso_flutter/joinScreen.dart';
 //import 'package:liviso_flutter/services/socketConnection.dart';
 
 class JoinMeetingPage extends StatefulWidget {
@@ -60,9 +60,6 @@ class _JoinMeetingPageState extends State<JoinMeetingPage> {
                      var response =  await startMeeting();
                     if (response != null) {
                   final body = json.decode(response.body);
-                  
-
-
                      final meetingId = body["data"];
                      validateMeeting(meetingId);
   // Use the decoded JSON as needed

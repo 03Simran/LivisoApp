@@ -19,7 +19,7 @@ class ControlPanel extends StatelessWidget {
       this.isConnectionFailed,
       this.onReconnect,
       this.onMeetingEnd,
-      super.key});
+      });
 
   @override
   Widget build(BuildContext context) {

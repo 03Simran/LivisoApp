@@ -8,7 +8,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:liviso_flutter/screens/homeScrn.dart';
 import 'package:liviso_flutter/utils/user.utils.dart';
 import 'package:liviso_flutter/widgets/control_panel.dart';
-import 'package:liviso_flutter/widgets/remote_connection.dart';
+import 'package:liviso_flutter/remote_connection.dart';
 
 class MeetingPage extends StatefulWidget {
 
@@ -220,7 +220,7 @@ _buildMeetingRoom() {
   }
 
   void gotoHomePage(){
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const HomeScreen1()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const HomeScreen1(id : "jbbdiej")));
   }
 }
 

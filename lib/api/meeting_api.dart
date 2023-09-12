@@ -14,7 +14,7 @@ Future<http.Response?> startMeeting() async {
   };
 
   var userId = await loadUserId(); // Await the Future to get the actual userId
-  var response = await client.post(Uri.parse('$MEETING_URL/start'),
+  var response = await http.post(Uri.parse('$MEETING_URL/start'),
       headers: requestHeaders,
       body: jsonEncode({'hostId': userId, 'hostName': ''}));
   

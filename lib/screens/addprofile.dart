@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:liviso_flutter/screens/homeScrn.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:liviso_flutter/screens/login.dart';
 
 
 class AddProfileScrn extends StatefulWidget {
@@ -49,9 +50,9 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
 
       final Map<String, dynamic> data = {
         
-        'shopName': companyName,
-        'webLink': companyWebsite,
-        'socialLink':companySocialMedia,
+        "shopName": companyName,
+        "webLink": companyWebsite,
+        "socialLink":companySocialMedia
 
       };
 
@@ -60,7 +61,7 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
 
       try {
         final response = await http.post(
-          Uri.parse('https://liviso.onrender.com/api/v1/auth/profile/${widget.id}'),
+          Uri.parse('https://stealth-zys3.onrender.com/api/v1/auth/profile/${widget.id}'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -73,11 +74,10 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
            ScaffoldMessenger.of(context).showSnackBar(
          const SnackBar(content: Text('Profile Saved Successfully')),
          );
-         await Future.delayed(Duration(milliseconds: 1500));
           
-           Navigator.of(context).push(
+           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => HomeScreen1(),
+              builder: (context) => LoginScreen(),
             ),
           );
           

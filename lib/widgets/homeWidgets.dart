@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'colors.dart';
+import '../utils/colors.dart';
 
 class CallData {
   final String phoneNo;
@@ -240,7 +240,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               width : 0.5 ),
                 
             ),
-            padding : EdgeInsets.symmetric(vertical : 14.h, horizontal: 12.w),
+            padding : EdgeInsets.symmetric(vertical : 12.h, horizontal: 12.w),
             child : Row (
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

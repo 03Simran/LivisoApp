@@ -47,6 +47,12 @@ dependencies:
   flutter_webrtc_wrapper: ^1.0.2
   shared_preferences: ^2.2.1
   uuid: ^4.0.0
+  zego_uikit_prebuilt_video_conference: ^2.4.0
+  awesome_notifications: ^0.7.4+1
+  firebase_messaging: ^14.6.7
+  firebase_core: ^2.15.1
+  flutter_local_notifications: ^15.1.1
+  app_settings: ^5.0.0
   
   
 

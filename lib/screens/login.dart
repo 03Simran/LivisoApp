@@ -8,13 +8,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:liviso_flutter/screens/homeScrn.dart';
 import 'package:http/http.dart' as http;
 import 'package:liviso_flutter/screens/addprofile.dart';
-import 'package:liviso_flutter/widgets/colors.dart';
+import 'package:liviso_flutter/screens/signup.dart';
+import 'package:liviso_flutter/utils/colors.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
 
 class LoginScreen extends StatefulWidget {
   static final GlobalKey<FormState> loginKey = GlobalKey<FormState>();
-  final String? phonefromSignup;
-  LoginScreen({this.phonefromSignup, Key? key}) : super(key: key);
+  
+  LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreen();
@@ -23,15 +24,15 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreen extends State<LoginScreen> {
 
   late final String user_id;
-  late TextEditingController phoneTextController;
-  var passwordTextController = TextEditingController();
+  TextEditingController phoneTextController = TextEditingController() ;
+  TextEditingController passwordTextController = TextEditingController();
 
 
 
   @override
   void initState() {
     super.initState();
-    phoneTextController = TextEditingController(text:  widget.phonefromSignup ?? "");
+   
   }
 
   final RegExp phoneRegex =  RegExp(r'^[0-9]{10}$');
@@ -60,6 +61,12 @@ class _LoginScreen extends State<LoginScreen> {
       final String phone = phoneTextController.text;
       final String password = passwordTextController.text;
 
+      if (phone.isEmpty || password.isEmpty) {
+  // Handle the case where either phone or password is empty.
+  print('Phone or password is empty.');
+  return; // Don't proceed with the API call.
+}
+
       final Map<String, dynamic> data = {
          
     "phone":phone,
@@ -67,11 +74,13 @@ class _LoginScreen extends State<LoginScreen> {
 
       };
 
+      
+
       final String jsonData = jsonEncode(data);
 
       try {
         final response = await http.post(
-          Uri.parse('https://liviso.onrender.com/api/v1/auth/login'),
+          Uri.parse('https://stealth-zys3.onrender.com/api/v1/auth/login'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -88,11 +97,11 @@ class _LoginScreen extends State<LoginScreen> {
 
           user_id= responseBody['userId'];
           print(response.body);
-          await Future.delayed(Duration(milliseconds: 1500));
+         
 
-           Navigator.of(context).push(
+           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => AddProfileScrn(id : user_id,),
+              builder: (context) => HomeScreen1(id : user_id,),
             ),
           );
           
@@ -183,7 +192,13 @@ class _LoginScreen extends State<LoginScreen> {
                                     fontSize: 16.sp,
                                     color: ThemeColors.primaryColor))),
                         TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SignUpScreen(),
+            ),
+          );
+                            },
                             child: Text('SignUp',
                                 style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
