@@ -24,6 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
    late final String user_id;
   
+   bool isLoading = false;
   final TextEditingController phoneTextController = TextEditingController();
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController nameTextController = TextEditingController();
@@ -77,6 +78,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final String jsonData = jsonEncode(data);
 
       try {
+        setState(() {
+          isLoading= true;
+        });
         final response = await http.post(
           Uri.parse('https://stealth-zys3.onrender.com/api/v1/auth/register'),
           headers: <String, String>{
@@ -86,6 +90,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         );
 
         if (response.statusCode == 201) {
+          setState(() {
+            isLoading= false;
+          });
           final Map<String, dynamic> responseBody = json.decode(response.body);
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
@@ -96,19 +103,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
           user_id= responseBody['userId'];
           
 
-           Navigator.of(context).push(
+           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => AddProfileScrn(id: user_id,),
             ),
           );
           
         } else {
+          setState(() {
+            isLoading= false;
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+         const SnackBar(content: Text('Check the credentials')),
+         );
+
 
           print('Failed to send profile data. Status code: ${response.body}');
         }
       } catch (e) {
-  
+        setState(() {
+          isLoading=false; 
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+         const SnackBar(content: Text('An error occured. Try Again')),
+         );
         print('Error sending profile data: $e');
+        
       }
     }
   }    
@@ -170,7 +191,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         TextButton(
                           onPressed: () {
                             
-           Navigator.of(context).push(
+           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => LoginScreen(),
             ) );
@@ -186,12 +207,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ],
                     ),
                     SizedBox(height: 20.h,),
-                    ButtonMain(
+                    !isLoading ? ButtonMain(
                       enabled: true,
                       label: 'Proceed',
                       onPressed: _signup
                       
-                    ),
+                    )
+                    : SizedBox(
+      width: 310.w,
+      height: 50.h,
+      child: FloatingActionButton(
+          onPressed: null,
+          backgroundColor: 
+               ThemeColors.primaryColor,
+              
+          foregroundColor: Colors.white,
+          shape: ContinuousRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r)),
+          child: const Center(
+            child : CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.white),)
+          )),
+    ),
 
                     SizedBox(height: 50.h,)
                   ],

@@ -11,6 +11,7 @@ import 'package:liviso_flutter/screens/addprofile.dart';
 import 'package:liviso_flutter/screens/signup.dart';
 import 'package:liviso_flutter/utils/colors.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   static final GlobalKey<FormState> loginKey = GlobalKey<FormState>();
@@ -22,7 +23,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreen extends State<LoginScreen> {
-
+  bool isLoading = false;
   late final String user_id;
   TextEditingController phoneTextController = TextEditingController() ;
   TextEditingController passwordTextController = TextEditingController();
@@ -57,7 +58,9 @@ class _LoginScreen extends State<LoginScreen> {
 
    Future<void> _login() async {
     if (LoginScreen.loginKey.currentState!.validate()) {
-     
+      setState(() {
+        isLoading = true;
+      });
       final String phone = phoneTextController.text;
       final String password = passwordTextController.text;
 
@@ -89,6 +92,10 @@ class _LoginScreen extends State<LoginScreen> {
 
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseBody = json.decode(response.body);
+
+          setState(() {
+            isLoading= false;
+          });
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
          const SnackBar(content: Text('Logged in Successfully')),
@@ -97,20 +104,30 @@ class _LoginScreen extends State<LoginScreen> {
 
           user_id= responseBody['userId'];
           print(response.body);
-         
+
+
+           final SharedPreferences shared_preferences  = await SharedPreferences.getInstance() ;
+          shared_preferences.setString('userId', user_id);
 
            Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => HomeScreen1(id : user_id,),
             ),
+
           );
+
+         
           
         } else {
-
+          setState(() {
+            isLoading= false;
+          });
           print('Failed to send profile data. Status code: ${response.body}');
         }
       } catch (e) {
-  
+        setState(() {
+          isLoading= false;
+        });
         print('Error sending profile data: $e');
       }
     }
@@ -193,7 +210,7 @@ class _LoginScreen extends State<LoginScreen> {
                                     color: ThemeColors.primaryColor))),
                         TextButton(
                             onPressed: () {
-                              Navigator.of(context).push(
+                              Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => SignUpScreen(),
             ),
@@ -209,11 +226,27 @@ class _LoginScreen extends State<LoginScreen> {
                     SizedBox(
                       height: 10.h,
                     ),
-                    ButtonMain(
+                    !isLoading? ButtonMain(
                       enabled: true,
                       label: 'Proceed',
                       onPressed: _login
-                    ),
+                    )
+                    :SizedBox(
+      width: 310.w,
+      height: 50.h,
+      child: FloatingActionButton(
+          onPressed: null,
+          backgroundColor: 
+               ThemeColors.primaryColor,
+              
+          foregroundColor: Colors.white,
+          shape: ContinuousRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r)),
+          child: const Center(
+            child : CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.white),)
+          )),
+    ),
                     SizedBox(
                       height: 5.h,
                     ),

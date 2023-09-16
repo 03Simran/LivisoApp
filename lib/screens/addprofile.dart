@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:liviso_flutter/screens/homeScrn.dart';
+import 'package:liviso_flutter/screens/signup.dart';
+import 'package:liviso_flutter/utils/colors.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:liviso_flutter/screens/login.dart';
@@ -21,6 +24,7 @@ static final GlobalKey<FormState> profileKey = GlobalKey<FormState>();
 }
 
 class _AddProfileScrnState extends State<AddProfileScrn> {
+  bool isLoading = false;
 
   String? validateRequiredvalues(String? value) {
      if (value == null || value.isEmpty) {
@@ -41,8 +45,14 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
     var comSocController = TextEditingController();   
 
     Future<void> _submitProfile() async {
-    if (AddProfileScrn
-  .profileKey.currentState!.validate()) {
+
+      
+
+    if (AddProfileScrn.profileKey.currentState!.validate()) {
+
+      setState(() {
+        isLoading = true;
+      });
     
       final String companyName = comNameController.text;
       final String companyWebsite = comWebController.text;
@@ -70,7 +80,9 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
 
         if (response.statusCode == 200) {
           print('Profile data sent successfully.');
-
+           setState(() {
+             isLoading= false;
+           });
            ScaffoldMessenger.of(context).showSnackBar(
          const SnackBar(content: Text('Profile Saved Successfully')),
          );
@@ -82,11 +94,18 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
           );
           
         } else {
-
-          print('Failed to send profile data. Status code: ${response.statusCode}');
+           setState(() {
+             isLoading= false;
+           });
+          print('Failed to send profile data. Status code: ${response.body}');
         }
       } catch (e) {
-  
+       setState(() {
+         isLoading= false;
+       });
+       ScaffoldMessenger.of(context).showSnackBar(
+         const SnackBar(content: Text('An error occured. Try Again')),
+         );
         print('Error sending profile data: $e');
       }
     }
@@ -119,9 +138,46 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
                      FormFields(label: 'Company Website', hint: 'www.comp.com', enabled: true, controller: comWebController, validateFunction:validateNonRequiredvalues ),
                      SizedBox(height : 25.h),
                      FormFields(label: 'Social Media ', hint: 'www.instagram.com//simran-01', enabled: true, controller: comSocController, validateFunction:validateNonRequiredvalues ),
- SizedBox(height : 40.h),
-                     
-                     ButtonMain(enabled: true, label: 'Save Profile', onPressed: _submitProfile,)
+ SizedBox(height : 200.h),
+
+                      TextButton(
+                          onPressed: () {
+                            
+           Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => SignUpScreen(),
+            ) );
+                          },
+                          child: Text(
+                            'Back to SignUp',
+                            style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                    fontSize: 16.sp,
+                                    color: ThemeColors.primaryColor)),
+                          ),
+                        ),
+
+                      SizedBox(height: 2.h,),
+                    !isLoading ?
+                     ButtonMain(enabled: true,
+                      label: 'Save Profile',
+                       onPressed:  _submitProfile )
+                       : SizedBox(
+      width: 310.w,
+      height: 50.h,
+      child: FloatingActionButton(
+          onPressed: null,
+          backgroundColor: 
+               ThemeColors.primaryColor,
+              
+          foregroundColor: Colors.white,
+          shape: ContinuousRectangleBorder(
+              borderRadius: BorderRadius.circular(10.r)),
+          child: const Center(
+            child : CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.white),)
+          )),
+    ),
                 ],),
               ),
             )

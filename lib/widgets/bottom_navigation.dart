@@ -38,9 +38,9 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
         ),
 
         BottomNavigationBarItem(
-          icon: Icon(Icons.search,
+          icon: Icon(Icons.video_call,
           ),
-          label: 'Search',
+          label: 'Video',
         ),
 
         BottomNavigationBarItem(

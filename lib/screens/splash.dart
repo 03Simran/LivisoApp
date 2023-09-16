@@ -4,9 +4,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:liviso_flutter/screens/homeScrn.dart';
+import 'package:liviso_flutter/screens/login.dart';
 import 'package:liviso_flutter/screens/signup.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
+import 'package:liviso_flutter/screens/signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+String? finalId ="";
 
 class SplashScreen extends StatefulWidget{
   const SplashScreen({super.key});
@@ -16,17 +21,34 @@ class SplashScreen extends StatefulWidget{
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
+
+  Future getValidationData() async {
+    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? obtainedId = sharedPreferences.getString('userId');
+    setState(() {
+      finalId = obtainedId;
+    });
+    print(finalId);
+  }
   @override
 
   void initState() {
-    super.initState();
-
-    Timer(Duration(seconds: 3),(){
+    getValidationData().whenComplete(() async {
+     Timer(Duration(seconds: 3),(){
       Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context)=> SignUpScreen()
+        builder: (context)=> 
+        (finalId == "" || finalId ==null)
+        ? LoginScreen()
+        :HomeScreen1(id: finalId!)
       ));
     });
+    });
+    super.initState();
+
+    
   }
+  
   @override
   Widget build(BuildContext context){
     return Scaffold(

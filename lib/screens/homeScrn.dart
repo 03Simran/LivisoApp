@@ -8,14 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:liviso_flutter/data/data_model.dart';
-import 'package:liviso_flutter/screens/video_call.dart';
-import 'package:liviso_flutter/services/notif.dart';
 import 'package:liviso_flutter/services/notif_service.dart';
 import 'package:liviso_flutter/screens/profileScrn.dart';
 import 'package:liviso_flutter/services/service_notification.dart';
 import 'package:liviso_flutter/utils/colors.dart';
-import 'package:liviso_flutter/utils/incoming_call.dart';
 import 'package:liviso_flutter/widgets/bottom_navigation.dart';
 import 'package:liviso_flutter/widgets/homeWidgets.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
@@ -94,56 +90,11 @@ class _HomeScreen1State extends State<HomeScreen1> {
     callLink = response.shopLink;
     });
 
-    //startPollingApi();
      });
   }
 
-  Future<void> startPollingApi() async {
-    const duration = Duration(seconds: 20); // Poll every 10 second
 
-    Timer.periodic(duration, (Timer timer) async {
-      try {
-        final response = await http.get(
-          Uri.parse(
-              'https://stealth-zys3.onrender.com/api/v1/video/notify?roomName=$shopName'),
-        );
-
-        if (response.statusCode == 200) {
-          final Map<String, dynamic> jsonResponse = json.decode(response.body);
-          final bool notificationStatus = jsonResponse['isNotified'] ?? false;
-          final String userId = jsonResponse['userName'] ?? '';
-
-          if (notificationStatus) {
-            // Display a notification if the status is true
-            showNotification(userId,shopName);
-          }
-
-          // You can use the userId here for any additional logic if needed
-        } else {
-          debugPrint('Failed to fetch API data');
-        }
-      } catch (error) {
-        debugPrint('Error while parsing API response: $error');
-      }
-    });
-  } 
-
-  Future<void> showNotification(String userId, String roomName) async {
-    await NotificationService.showNotification(
-        title: "Incoming Call from",
-        body: userId,
-        payload: {
-          "navigate": "true",
-        },
-        actionButtons: [
-          NotificationActionButton(
-            key: 'manage',
-            label: 'Manage Call',
-            actionType: ActionType.SilentAction,
-            color: Colors.green,
-          )
-        ]);
-  }
+  
 
   Future<ProfileData?> fetchProfileData() async {
     final response = await http.get(Uri.parse(
@@ -164,7 +115,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: Logo(fontSize: 25.sp),
-          titleSpacing: 2.w,
+          titleSpacing: 5.w,
           elevation: 3,
           actions: <Widget>[
             Row(
@@ -179,7 +130,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
                     ),
                   ),
                 ),
-                SizedBox(width: 6.w), // Add spacing between text and icon
+                SizedBox(width: 0), // Add spacing between text and icon
 
                 IconButton(
                   onPressed: () async {
@@ -277,13 +228,13 @@ class _HomeScreen1State extends State<HomeScreen1> {
                                             maxWidth: 170.0, 
                                        ),
                                   child: Text( callLink, 
-                                        maxLines: 2, // Set the maximum number of lines
+                                        maxLines: 2, 
                                         overflow: TextOverflow.ellipsis,
                                         style : GoogleFonts.poppins(
                                           textStyle: TextStyle (color: ThemeColors.textColor7,
                                           fontSize: 10.sp,
                                           fontWeight: FontWeight.w300)
-                                        ) // Truncate text with ellipsis (...) if it doesn't fit within the two lines
+                                        ) 
                                       ),
                                 ),
 
@@ -311,68 +262,68 @@ class _HomeScreen1State extends State<HomeScreen1> {
                 ),
               ],
             ),
-            incomingCall && isOpen
-                ? Visibility(
-                    visible: true,
-                    child: Positioned(
-                        top: 70.h,
-                        left: 30.w,
-                        child: Container(
-                            height: 346.h,
-                            width: 269.w,
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey
-                                        .withOpacity(0.5), // Shadow color
-                                    spreadRadius: 2, // Spread radius
-                                    blurRadius: 5, // Blur radius
-                                    offset: Offset(
-                                        0, 3), // Offset in x and y direction
-                                  ),
-                                ],
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10.r)),
-                            child: Column(
-                              children: [
-                                SizedBox(height: 45.h),
-                                Text('Incoming Call from',
-                                    style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                            fontSize: 18.sp,
-                                            fontWeight: FontWeight.normal))),
-                                SizedBox(height: 20.h),
-                                Text(incomingCallNo,
-                                    style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
-                                            fontSize: 25.sp,
-                                            fontWeight: FontWeight.w800))),
-                                Spacer(),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {},
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 70.w,
-                                    ),
-                                    CircleAvatar(
-                                      backgroundColor: Colors.red,
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 45.h,
-                                )
-                              ],
-                            ))),
-                  )
-                : Visibility(visible: false, child: Container())
+            // incomingCall && isOpen
+            //     ? Visibility(
+            //         visible: true,
+            //         child: Positioned(
+            //             top: 70.h,
+            //             left: 30.w,
+            //             child: Container(
+            //                 height: 346.h,
+            //                 width: 269.w,
+            //                 decoration: BoxDecoration(
+            //                     boxShadow: [
+            //                       BoxShadow(
+            //                         color: Colors.grey
+            //                             .withOpacity(0.5), // Shadow color
+            //                         spreadRadius: 2, // Spread radius
+            //                         blurRadius: 5, // Blur radius
+            //                         offset: Offset(
+            //                             0, 3), // Offset in x and y direction
+            //                       ),
+            //                     ],
+            //                     color: Colors.white,
+            //                     borderRadius: BorderRadius.circular(10.r)),
+            //                 child: Column(
+            //                   children: [
+            //                     SizedBox(height: 45.h),
+            //                     Text('Incoming Call from',
+            //                         style: GoogleFonts.poppins(
+            //                             textStyle: TextStyle(
+            //                                 fontSize: 18.sp,
+            //                                 fontWeight: FontWeight.normal))),
+            //                     SizedBox(height: 20.h),
+            //                     Text(incomingCallNo,
+            //                         style: GoogleFonts.poppins(
+            //                             textStyle: TextStyle(
+            //                                 fontSize: 25.sp,
+            //                                 fontWeight: FontWeight.w800))),
+            //                     Spacer(),
+            //                     Row(
+            //                       crossAxisAlignment: CrossAxisAlignment.center,
+            //                       mainAxisAlignment: MainAxisAlignment.center,
+            //                       children: [
+            //                         GestureDetector(
+            //                           onTap: () {},
+            //                           child: CircleAvatar(
+            //                             backgroundColor: Colors.green,
+            //                           ),
+            //                         ),
+            //                         SizedBox(
+            //                           width: 70.w,
+            //                         ),
+            //                         CircleAvatar(
+            //                           backgroundColor: Colors.red,
+            //                         )
+            //                       ],
+            //                     ),
+            //                     SizedBox(
+            //                       height: 45.h,
+            //                     )
+            //                   ],
+            //                 ))),
+            //       )
+            //     : Visibility(visible: false, child: Container())
           ]),
         ),
         bottomNavigationBar: MyBottomNavigationBar(

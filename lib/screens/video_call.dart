@@ -74,7 +74,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
               config: ZegoUIKitPrebuiltVideoConferenceConfig(
                   turnOnCameraWhenJoining: false,
                   onLeave: () {
-                    Navigator.of(context).push(MaterialPageRoute(
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => HomeScreen1(
                         id: "",
                       ),
