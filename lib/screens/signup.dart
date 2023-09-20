@@ -96,7 +96,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           final Map<String, dynamic> responseBody = json.decode(response.body);
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
-         const SnackBar(content: Text('Password sent to your email')),
+         SnackBar(content: Text(responseBody['message'])),
          );
 
           print('Sign Up Successful');
@@ -113,9 +113,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           setState(() {
             isLoading= false;
           });
-
+          final Map<String, dynamic> responseBody = json.decode(response.body);
           ScaffoldMessenger.of(context).showSnackBar(
-         const SnackBar(content: Text('Check the credentials')),
+          SnackBar(content: Text(responseBody['message'])),
          );
 
 

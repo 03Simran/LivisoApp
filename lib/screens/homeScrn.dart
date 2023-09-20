@@ -3,12 +3,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:liviso_flutter/services/notif_service.dart';
+
 import 'package:liviso_flutter/screens/profileScrn.dart';
 import 'package:liviso_flutter/services/service_notification.dart';
 import 'package:liviso_flutter/utils/colors.dart';
@@ -115,7 +114,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: Logo(fontSize: 25.sp),
-          titleSpacing: 5.w,
+          titleSpacing: 0,
           elevation: 3,
           actions: <Widget>[
             Row(

@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:liviso_flutter/screens/homeScrn.dart';
 import 'package:liviso_flutter/screens/login.dart';
-import 'package:liviso_flutter/screens/signup.dart';
+
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
-import 'package:liviso_flutter/screens/signup.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 String? finalId ="";

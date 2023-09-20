@@ -2,12 +2,12 @@
 
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:liviso_flutter/screens/homeScrn.dart';
 import 'package:http/http.dart' as http;
-import 'package:liviso_flutter/screens/addprofile.dart';
+import 'package:liviso_flutter/screens/homeScrn.dart';
 import 'package:liviso_flutter/screens/signup.dart';
 import 'package:liviso_flutter/utils/colors.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
@@ -23,6 +23,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreen extends State<LoginScreen> {
+
+ FirebaseMessaging messaging = FirebaseMessaging.instance;
+  
+  String? token ='';
   bool isLoading = false;
   late final String user_id;
   TextEditingController phoneTextController = TextEditingController() ;
@@ -55,6 +59,21 @@ class _LoginScreen extends State<LoginScreen> {
       return null;
     }
   }
+  
+  Future<String?> getDeviceToken() async {
+    String? tokenPhone = await messaging.getToken();
+    setState(() {
+      token = tokenPhone;
+    });
+    return token;
+  }
+
+  void isTokenRefresh(){
+    messaging.onTokenRefresh.listen ((event){
+      event.toString();
+      print("refreshToken");
+    });
+  }
 
    Future<void> _login() async {
     if (LoginScreen.loginKey.currentState!.validate()) {
@@ -73,7 +92,8 @@ class _LoginScreen extends State<LoginScreen> {
       final Map<String, dynamic> data = {
          
     "phone":phone,
-    "password":password
+    "password":password,
+    "token" : token
 
       };
 
@@ -98,7 +118,7 @@ class _LoginScreen extends State<LoginScreen> {
           });
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
-         const SnackBar(content: Text('Logged in Successfully')),
+         SnackBar(content: Text(responseBody['message'])),
          );
           
 
@@ -118,17 +138,33 @@ class _LoginScreen extends State<LoginScreen> {
 
          
           
-        } else {
+        } else if (response.statusCode == 400) {
+          final Map<String, dynamic> responseBody = json.decode(response.body);
           setState(() {
             isLoading= false;
           });
-          print('Failed to send profile data. Status code: ${response.body}');
+         // print('Failed to send profile data. Status code: ${response.body}');
+         ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(content: Text(responseBody['message'])),
+         );
+
+        }
+        else{
+          setState(() {
+            isLoading= false;
+          });
+         // print('Failed to send profile data. Status code: ${response.body}');
+         ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(content: Text('An error occured.Try again')),
+         );
         }
       } catch (e) {
         setState(() {
           isLoading= false;
         });
-        print('Error sending profile data: $e');
+         ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(content: Text('An error occured.Try again')),
+         );
       }
     }
   }

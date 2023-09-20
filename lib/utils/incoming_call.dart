@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:liviso_flutter/screens/homeScrn.dart';
 import 'package:liviso_flutter/screens/video_call.dart';
-import 'package:liviso_flutter/utils/colors.dart';
+
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
 
 class IncomingCallNotification extends StatelessWidget {

@@ -9,9 +9,7 @@ import 'package:liviso_flutter/screens/splash.dart';
 import 'package:liviso_flutter/utils/colors.dart';
 // import 'package:liviso_flutter/screens/login.dart';
 // import 'package:liviso_flutter/services/notif_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:liviso_flutter/screens/signup.dart';
-import 'package:get/get.dart';
+
 
 // import 'package:liviso_flutter/screens/homeScrn.dart';
 // import 'package:liviso_flutter/screens/addprofile.dart';
