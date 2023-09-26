@@ -72,6 +72,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
               userName: 'SIMRAN',
               conferenceID: widget.callID,
               config: ZegoUIKitPrebuiltVideoConferenceConfig(
+                
                   turnOnCameraWhenJoining: false,
                   onLeave: () {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -80,6 +81,8 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                       ),
                     ));
                   }),
+
+                  
             ),
           ),
         ),

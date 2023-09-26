@@ -124,7 +124,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               // While waiting for the API response, show a loading indicator
-              return Center(child: CircularProgressIndicator());
+              return Center(child: CircularProgressIndicator(
+                color: ThemeColors.primaryColor,
+              ));
             } else if (snapshot.hasError) {
               // If an error occurs during the API call, display an error message
               return Text('Error: ${snapshot.error}');

@@ -75,7 +75,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
      notificationService.fireBaseInit(context);
      notificationService.setUpInteractMessage(context);
      notificationService.getDeviceToken().then((value){
-       print("Device Token");
+       print("Device Token Home screen");
        print(value);
      });
 
