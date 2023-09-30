@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:liviso_flutter/main.dart';
 import 'package:liviso_flutter/screens/homeScrn.dart';
 import 'package:liviso_flutter/screens/profileScrn.dart';
 import 'package:liviso_flutter/utils/colors.dart';
 import 'package:liviso_flutter/widgets/bottom_navigation.dart';
+import 'package:provider/provider.dart';
 
 import 'package:zego_uikit_prebuilt_video_conference/zego_uikit_prebuilt_video_conference.dart';
 
 class VideoCallScreen extends StatefulWidget {
   final String callID;
+  final String roomName;
 
   const VideoCallScreen({
     Key? key,
     required this.callID,
+    required this.roomName
   }) : super(key: key);
 
   @override
@@ -68,16 +72,19 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                   1237771667, // Fill in the appID that you get from ZEGOCLOUD Admin Console.
               appSign:
                   '3dcf6738b89de0a75da57243e1d1b6438ff26cbcd479c5a1eb79b3681f996c36', // Fill in the appSign that you get from ZEGOCLOUD Admin Console.
-              userID: 'Simran',
-              userName: 'SIMRAN',
+              userID: widget.roomName,
+              userName: widget.roomName,
               conferenceID: widget.callID,
               config: ZegoUIKitPrebuiltVideoConferenceConfig(
                 
                   turnOnCameraWhenJoining: false,
                   onLeave: () {
+                    UserIdProvider userIdProvider = context.read<UserIdProvider>();
+                    String userId = userIdProvider.userId;
+
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => HomeScreen1(
-                        id: "",
+                        id: userId,
                       ),
                     ));
                   }),

@@ -87,14 +87,14 @@ class IncomingCallNotification extends StatelessWidget {
                           );
 
                           if (response.statusCode == 200) {
-                            print('AAAEEEEEEEEEEEEEE');
+                            
                             print(response.body);
                         //  setState()
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    VideoCallScreen(callID: this.roomName),
+                                    VideoCallScreen(callID: this.roomName,roomName: this.roomName,),
                               ),
                             );
                           }

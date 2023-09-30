@@ -5,19 +5,21 @@ import 'package:liviso_flutter/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Logo extends StatelessWidget {
-  final double fontSize; // Add a named parameter for font size
+  final double height;
+  final double width; // Rename fontSize to size
 
-  const Logo({Key? key, this.fontSize = 44}) : super(key: key);
+  const Logo({Key? key, this.height = 35, this.width= 70}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'Liviso',
-      style: GoogleFonts.slackey(
-          textStyle:
-              TextStyle(color: ThemeColors.primaryColor, fontSize: 44.sp)),
+    return Image.asset(
+      r'assets/images/LivisoBlackLogo.jpeg', // Replace with the path to your logo image
+      width: width,
+      height: height,
     );
   }
 }
+
 
 //HeadingText
 class TextHd extends StatelessWidget {

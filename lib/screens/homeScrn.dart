@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:liviso_flutter/main.dart';
 
 import 'package:liviso_flutter/screens/profileScrn.dart';
 import 'package:liviso_flutter/services/service_notification.dart';
@@ -16,6 +17,7 @@ import 'package:liviso_flutter/widgets/homeWidgets.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:liviso_flutter/models/profile_data.dart';
+import 'package:provider/provider.dart';
 
 String callLink = '';
 
@@ -35,14 +37,14 @@ class _HomeScreen1State extends State<HomeScreen1> {
   NotificationServices notificationService = NotificationServices();
 
   
-  
+  List<CallHistoryData>? callHistoryData = [];
   int selectedIndex = 0;
-  bool incomingCall = false;
-
+  
+  bool isLoading = true;
   final incomingCallNo = '8252645278';
   bool isOpen = false;
   String shopName = 'abcd';
-  List<dynamic> callsData = [];
+ 
 
   void _onItemTapped(int index) {
     setState(() {
@@ -69,6 +71,8 @@ class _HomeScreen1State extends State<HomeScreen1> {
   @override
   void initState()  {
     super.initState();
+    UserIdProvider userIdProvider = context.read<UserIdProvider>();
+    userIdProvider.userId = widget.id;
 
      notificationService.requestNotificationsPermission();
      //notificationService.isTokenRefresh();
@@ -76,24 +80,40 @@ class _HomeScreen1State extends State<HomeScreen1> {
      notificationService.setUpInteractMessage(context);
      notificationService.getDeviceToken().then((value){
        print("Device Token Home screen");
-       print(value);
+       print(value); 
      });
 
+
+    Future.delayed(Duration.zero, () async {
+    // Show loading indicator while fetching profile data
+    setState(() {
+      isLoading = true;
+    });
+    }
+    );
+     
     // // Use Future.delayed to run your asynchronous operation
     Future.delayed(Duration.zero, () async {
      ProfileData? response = await fetchProfileData();
      setState(() {
+      
        isOpen = response!.isOpen!;
        shopName = response.shopName;
-     callsData = response.calls!;
     callLink = response.shopLink;
+    callHistoryData = response.calls ;
+     isLoading = false;
     });
 
+
      });
+
+     
+
+     
   }
 
 
-  
+
 
   Future<ProfileData?> fetchProfileData() async {
     final response = await http.get(Uri.parse(
@@ -102,19 +122,20 @@ class _HomeScreen1State extends State<HomeScreen1> {
       final Map<String, dynamic> data = json.decode(response.body);
       return ProfileData.fromJson(data["user"]);
     } else {
-      print("Profile Data not loaded fot Home Screen");
+      print("Profile Data not loaded for Home Screen");
       return null;
     }
   }
-
+  
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Logo(fontSize: 25.sp),
-          titleSpacing: 0,
+          title: Logo(height: 60.h,width: 120.w,),
+          titleSpacing: 7.w,
           elevation: 3,
           actions: <Widget>[
             Row(
@@ -133,9 +154,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
 
                 IconButton(
                   onPressed: () async {
-                    setState(() {
-                      isOpen = !isOpen; // Toggle the value of isOpen
-                    });
+                    
                     try {
                       final response = await http.post(
                         Uri.parse(
@@ -145,8 +164,11 @@ class _HomeScreen1State extends State<HomeScreen1> {
                         },
                       );
 
-                      if (response.statusCode == 200) {
+                      if (response.statusCode == 200 ||response.statusCode == 201) {
                         print("Value CHANGED");
+                        setState(() {
+                      isOpen = !isOpen; // Toggle the value of isOpen
+                    });
                       } else {
                         print("SOME ERROR");
                       }
@@ -171,160 +193,157 @@ class _HomeScreen1State extends State<HomeScreen1> {
             ),
           ],
         ),
-        body: Container(
-          padding: EdgeInsets.all(13.w),
-          color: ThemeColors.backgroundColor,
-          child: Stack(children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Recent Calls',
-                    style: GoogleFonts.poppins(
-                        textStyle: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeColors.textColor6))),
-                SizedBox(height: 17.h),
-                Expanded(
-                  child: SingleChildScrollView(
-                      child: callsData.isEmpty
-                          ? Container(
-                              margin: EdgeInsets.all(5.h),
-                              padding: EdgeInsets.all(10.w),
-                              width: double.infinity,
-                              height: 160.h,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8.r)),
-                              
-                              child : Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                Text('No Calls Yet!!',
+        body:  Container(
+  padding: EdgeInsets.all(13.w),
+  color: ThemeColors.backgroundColor,
+  child: Stack(
+    children: [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Recent Calls',
+            style: GoogleFonts.poppins(
+              textStyle: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+                color: ThemeColors.textColor6))),
+          SizedBox(height: 17.h),
+          Expanded(
+            child: isLoading ? 
+            Center(
+              child : CircularProgressIndicator(color: ThemeColors.primaryColor,)
+            )
+            : callHistoryData == [] ? Container(
+                    margin: EdgeInsets.all(5.h),
+                    padding: EdgeInsets.all(10.w),
+                    width: double.infinity,
+                    height: 160.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.r)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('No Calls Yet!!',
+                          style : GoogleFonts.poppins(
+                            textStyle: TextStyle (color: ThemeColors.textColor7,
+                            fontSize: 14.sp))),
+                        SizedBox(height: 10.h,),
+                        Text('Start by sharing the shop link with the customers:',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style : GoogleFonts.poppins(
+                            textStyle: TextStyle (color: ThemeColors.textColor7,
+                            fontSize: 13.sp))),
+                        SizedBox(height: 10.h,),
+                        Row (
+                          children: [
+                            Text('ShopLink:',
+                              style : GoogleFonts.poppins(
+                                textStyle: TextStyle (color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 13.sp))),
+                            SizedBox(width: 10.w,),
+                            Container(
+                              constraints: BoxConstraints(
+                                maxWidth: 170.0, 
+                              ),
+                              child: Text( callLink, 
+                                maxLines: 2, 
+                                overflow: TextOverflow.ellipsis,
                                 style : GoogleFonts.poppins(
                                   textStyle: TextStyle (color: ThemeColors.textColor7,
-                                  fontSize: 14.sp)
-                                )),
-                                SizedBox(height: 10.h,),
-                                Text('Start by sharing the shop link with the customers:',
-                                maxLines: 2, // Set the maximum number of lines
-                                        overflow: TextOverflow.ellipsis,
-                                style : GoogleFonts.poppins(
-                                  textStyle: TextStyle (color: ThemeColors.textColor7,
-                                  fontSize: 13.sp)
-                                )),
-                                 SizedBox(height: 10.h,),
-                                Row (children: [
-                                  Text('ShopLink:',
-                                style : GoogleFonts.poppins(
-                                  textStyle: TextStyle (color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 13.sp)
-                                )),
-                                SizedBox(width: 10.w,),
-                                Container(
-                                  constraints: BoxConstraints(
-                                            maxWidth: 170.0, 
-                                       ),
-                                  child: Text( callLink, 
-                                        maxLines: 2, 
-                                        overflow: TextOverflow.ellipsis,
-                                        style : GoogleFonts.poppins(
-                                          textStyle: TextStyle (color: ThemeColors.textColor7,
-                                          fontSize: 10.sp,
-                                          fontWeight: FontWeight.w300)
-                                        ) 
-                                      ),
-                                ),
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w300)
+                                ) 
+                              ),
+                            ),
+                            SizedBox(width: 10.w,),
+                            CopyTextButton()
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                 : ListView.builder(
+                     itemCount: callHistoryData?.length,
+                    itemBuilder: (context, index) {
+                      final call = callHistoryData?[index];
+                      return Container(
+                       margin: EdgeInsets.all(5.h),
+                       padding: EdgeInsets.all(10.w),
+                       width: double.infinity,
+                       height: 65.h,
+                       decoration: BoxDecoration(
+                         color: Colors.white,
+                         borderRadius: BorderRadius.circular(8.r),
+                       ),
+                        child: Row(
+                          children: [
+                           Icon(
+                             Icons.arrow_circle_left,
+                             size: 20.w,
+                           ),
+                           SizedBox(width: 7.w),
+                           Column(
+                             crossAxisAlignment: CrossAxisAlignment.start,
+                           mainAxisAlignment: MainAxisAlignment.center,
+                             children: [
+                                Text(
+                                 call!.phone,
+                                style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                      fontSize: 15.sp,
+                                       fontWeight: FontWeight.w500,
+                                      color: !call.isAccepted && !call.isRejected 
+                                      ?  Colors.red
+                                      :ThemeColors.primaryColor
+                                    ),
+                                   ),
+                                 ),
+                                
+                             ],
+                            ),
+                            Spacer(),
+                             Column(
+                               crossAxisAlignment: CrossAxisAlignment.end,
+                               mainAxisAlignment: MainAxisAlignment.center,
+                               children: [
+                                 Text(
+                                   "",
+                                   style: GoogleFonts.poppins(
+                                     textStyle: TextStyle(
+                                       fontSize: 9.sp,
+                                       fontWeight: FontWeight.w500,
+                                       color: ThemeColors.textColor5,
+                                     ),
+                                   ),
+                                 ),
+                                 Text(
+                                   call.date,
+                                   style: GoogleFonts.poppins(
+                                     textStyle: TextStyle(
+                                       fontSize: 9.sp,
+                                       fontWeight: FontWeight.w500,
+                                     color: ThemeColors.textColor5,
+                                     ),
+                                   ),
+                                 ),
+                               ],
+                           ),
+                             SizedBox(width: 7.w),
+                           ],
+                         ),
+                    );
+                   },
+                  ),
+          ),
+        ],
+      ),
+    ],
+  ),
+),
 
-                                SizedBox(width: 10.w,),
-                                CopyTextButton()
-
-
-                                ],),
-                             //   SizedBox(height: 10.h,),
-
-                                //  TextButton(onPressed: (){
-                                //   showNotification(widget.id,"Aks");
-                                //  },
-                                //  child: Text("Accept or Reject"))
-                               
-                              ],),
-                              
-                            )
-                          : Column(
-                              children: [
-                                CallElement(),
-                                CallElement(),
-                              ],
-                            )),
-                ),
-              ],
-            ),
-            // incomingCall && isOpen
-            //     ? Visibility(
-            //         visible: true,
-            //         child: Positioned(
-            //             top: 70.h,
-            //             left: 30.w,
-            //             child: Container(
-            //                 height: 346.h,
-            //                 width: 269.w,
-            //                 decoration: BoxDecoration(
-            //                     boxShadow: [
-            //                       BoxShadow(
-            //                         color: Colors.grey
-            //                             .withOpacity(0.5), // Shadow color
-            //                         spreadRadius: 2, // Spread radius
-            //                         blurRadius: 5, // Blur radius
-            //                         offset: Offset(
-            //                             0, 3), // Offset in x and y direction
-            //                       ),
-            //                     ],
-            //                     color: Colors.white,
-            //                     borderRadius: BorderRadius.circular(10.r)),
-            //                 child: Column(
-            //                   children: [
-            //                     SizedBox(height: 45.h),
-            //                     Text('Incoming Call from',
-            //                         style: GoogleFonts.poppins(
-            //                             textStyle: TextStyle(
-            //                                 fontSize: 18.sp,
-            //                                 fontWeight: FontWeight.normal))),
-            //                     SizedBox(height: 20.h),
-            //                     Text(incomingCallNo,
-            //                         style: GoogleFonts.poppins(
-            //                             textStyle: TextStyle(
-            //                                 fontSize: 25.sp,
-            //                                 fontWeight: FontWeight.w800))),
-            //                     Spacer(),
-            //                     Row(
-            //                       crossAxisAlignment: CrossAxisAlignment.center,
-            //                       mainAxisAlignment: MainAxisAlignment.center,
-            //                       children: [
-            //                         GestureDetector(
-            //                           onTap: () {},
-            //                           child: CircleAvatar(
-            //                             backgroundColor: Colors.green,
-            //                           ),
-            //                         ),
-            //                         SizedBox(
-            //                           width: 70.w,
-            //                         ),
-            //                         CircleAvatar(
-            //                           backgroundColor: Colors.red,
-            //                         )
-            //                       ],
-            //                     ),
-            //                     SizedBox(
-            //                       height: 45.h,
-            //                     )
-            //                   ],
-            //                 ))),
-            //       )
-            //     : Visibility(visible: false, child: Container())
-          ]),
-        ),
         bottomNavigationBar: MyBottomNavigationBar(
           onItemTapped: _onItemTapped,
           selectedIndex: selectedIndex,

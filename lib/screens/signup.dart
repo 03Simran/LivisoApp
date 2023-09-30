@@ -71,6 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final String email = emailTextController.text;
       final String phone = phoneTextController.text;
 
+
       final Map<String, dynamic> data = {
          "name":name,
     "phone":phone,
@@ -99,7 +100,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           final Map<String, dynamic> responseBody = json.decode(response.body);
           
           ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(content: Text(responseBody['message'])),
+         SnackBar(content: Text('SignUp Successful Password has been sent to your mail')),
          );
 
           if (kDebugMode) {
@@ -157,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 120.h,),
-                    Logo(fontSize: 44.sp,),
+                    Logo(height: 100.h,width: 200.w,),
                     SizedBox(height: 52.h,),
                     const TextHd(text: 'Become a partner'),
                     SizedBox(height: 58.h),

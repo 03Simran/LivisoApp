@@ -1,4 +1,5 @@
 import 'package:liviso_flutter/models/callItems.dart';
+import 'package:liviso_flutter/widgets/homeWidgets.dart';
 
 class ProfileData {
   String name;
@@ -7,7 +8,7 @@ class ProfileData {
   String webLink ;
   String socialLink ;
   String email ;
- List<dynamic>? calls;
+ List<CallHistoryData>? calls;
   bool? isOpen;
   String shopLink;
   bool? isRegistered;
@@ -25,7 +26,7 @@ class ProfileData {
     required this.socialLink,
     required this.email,
     this.calls,
-    this.isOpen,
+    required this.isOpen,
     required this.shopLink,
     this.isRegistered,
     required this.password,

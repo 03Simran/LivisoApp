@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:liviso_flutter/screens/homeScrn.dart';
 import 'package:liviso_flutter/screens/splash.dart';
 import 'package:liviso_flutter/utils/colors.dart';
+import 'package:provider/provider.dart';
 // import 'package:liviso_flutter/screens/login.dart';
 // import 'package:liviso_flutter/services/notif_service.dart';
 
@@ -29,8 +30,12 @@ void main() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_fireBaseMessagingbackgroundHandler);
   runApp(
- 
-  MyApp(),
+MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserIdProvider>(create: (_) => UserIdProvider()),
+      ],
+      child: MyApp(),
+    ),
    
   );
 }
@@ -71,5 +76,9 @@ class MyApp extends StatelessWidget {
         }, );
     
   }
+}
+
+class UserIdProvider extends ChangeNotifier {
+  String userId = "default_user_id";
 }
 

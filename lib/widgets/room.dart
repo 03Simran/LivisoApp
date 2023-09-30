@@ -76,7 +76,7 @@ class _CreateRoomState extends State<CreateRoom> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        VideoCallScreen(callID:roomId ),
+                        VideoCallScreen(callID:roomId, roomName: roomId, ),
                   ),
                 );
   }

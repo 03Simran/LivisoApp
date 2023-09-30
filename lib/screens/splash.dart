@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
-
+import 'package:liviso_flutter/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:liviso_flutter/screens/homeScrn.dart';
@@ -10,6 +10,7 @@ import 'package:liviso_flutter/screens/login.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 String? finalId ="";
 
@@ -54,12 +55,17 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
        
        body: Container(
-        color:Colors.blue,
+        color:ThemeColors.primaryColor,
   
-        child:Container(
-          color: Colors.white,
-          child:  Center(child: Logo(fontSize: 100.sp,))
+        child:  SafeArea(
+          child: Center(
+            child: Image.asset(r'assets/images/Liviso White Logo.png',
+            width: 700.w,
+            height:350.h,
+            )
+          ),
         )
+        
        ), 
     );
   }

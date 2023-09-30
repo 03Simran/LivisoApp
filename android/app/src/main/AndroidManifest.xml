@@ -11,9 +11,9 @@
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <application
-        android:label="liviso_flutter"
+        android:label="Liviso"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/logo">
         <activity
             android:name=".MainActivity"
             android:exported="true"

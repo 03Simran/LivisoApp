@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:liviso_flutter/main.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:liviso_flutter/models/profile_data.dart';
 import 'package:liviso_flutter/screens/homeScrn.dart';
@@ -14,11 +15,12 @@ import 'package:liviso_flutter/widgets/homeWidgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
 import 'package:liviso_flutter/widgets/profileWidget.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
 class ProfileScreen extends StatefulWidget {
-  final String user_id;
+  final String user_id ;
   const ProfileScreen({  required this.user_id, Key? key}) : super(key: key);
 
   @override
@@ -53,10 +55,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 
   Future<void> onSave(String editedText, String param) async {
+
     try {
+      String userId; 
+
+      if(widget.user_id == null){
+        
+        UserIdProvider userIdProvider = context.read<UserIdProvider>();
+        userId = userIdProvider.userId;
+      }
+      else{
+        userId = widget.user_id;
+      }
          final response = await http.post(
                         Uri.parse(
-                            'https://stealth-zys3.onrender.com/api/v1/auth/profile/${widget.user_id}'), 
+                            'https://stealth-zys3.onrender.com/api/v1/auth/profile/$userId'), 
                         body: {
                           param : editedText,
                         },
@@ -78,20 +91,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late Future<ProfileData> profileData; 
   
   Future<ProfileData> fetchProfileData() async {
-  final response = await http.get(Uri.parse('https://stealth-zys3.onrender.com/api/v1/auth/getProfile/${widget.user_id}')); 
-  if (response.statusCode == 200) {
-    final Map<String, dynamic> data = json.decode(response.body);
-    return ProfileData.fromJson(data["user"]);
-  } else {
-    throw Exception('Failed to load profile data');
+  try {
+     String userId; 
+
+      if(widget.user_id == null){
+        
+        UserIdProvider userIdProvider = context.read<UserIdProvider>();
+        userId = userIdProvider.userId;
+      }
+      else{
+        userId = widget.user_id;
+      }
+    final response = await http.get(Uri.parse('https://stealth-zys3.onrender.com/api/v1/auth/getProfile/$userId'));
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return ProfileData.fromJson(data["user"]);
+    } else {
+      print('API Request Failed with Status Code: ${response.statusCode}');
+      throw Exception('Failed to load profile data : ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Error fetching profile data: $error');
+    throw Exception('Failed to load profile data: $error');
   }
 }
+
 
   @override
   void initState() {
     super.initState();
     print(widget.user_id);
-    profileData = fetchProfileData(); 
+    if(widget.user_id != null){
+        profileData = fetchProfileData(); 
+    }
+    
   }
 
   Future _logout() async{

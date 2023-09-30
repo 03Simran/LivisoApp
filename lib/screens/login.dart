@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:liviso_flutter/main.dart';
 import 'package:liviso_flutter/screens/homeScrn.dart';
 import 'package:liviso_flutter/screens/signup.dart';
 import 'package:liviso_flutter/services/service_notification.dart';
 import 'package:liviso_flutter/utils/colors.dart';
 import 'package:liviso_flutter/widgets/loginWidgets.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -142,10 +144,13 @@ class _LoginScreen extends State<LoginScreen> {
           user_id = responseBody['userId'];
           print(response.body);
           //print(token);
+          UserIdProvider userIdProvider = context.read<UserIdProvider>();
+          userIdProvider.userId = user_id;
 
           final SharedPreferences shared_preferences =
               await SharedPreferences.getInstance();
           shared_preferences.setString('userId', user_id);
+          
 
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
@@ -202,9 +207,7 @@ class _LoginScreen extends State<LoginScreen> {
                     SizedBox(
                       height: 110.h,
                     ),
-                    Logo(
-                      fontSize: 44.sp,
-                    ),
+                    Logo(height: 100.h,width: 200.w,),
                     SizedBox(
                       height: 45.h,
                     ),
@@ -234,13 +237,13 @@ class _LoginScreen extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       //crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextButton(
-                            onPressed: () {},
-                            child: Text('Forgot Password?',
-                                style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        fontSize: 16.sp,
-                                        color: ThemeColors.primaryColor)))),
+                        // TextButton(
+                        //     onPressed: () {},
+                        //     child: Text('Forgot Password?',
+                        //         style: GoogleFonts.poppins(
+                        //             textStyle: TextStyle(
+                        //                 fontSize: 16.sp,
+                        //                 color: ThemeColors.primaryColor)))),
                       ],
                     ),
                     SizedBox(
