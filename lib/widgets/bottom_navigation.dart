@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liviso_flutter/utils/colors.dart';
@@ -6,7 +8,7 @@ class MyBottomNavigationBar extends StatefulWidget {
   final int selectedIndex;
   final void Function(int) onItemTapped;
 
-  MyBottomNavigationBar({
+  const MyBottomNavigationBar({super.key, 
     required this.selectedIndex,
     required this.onItemTapped,
   });

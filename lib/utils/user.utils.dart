@@ -1,12 +1,12 @@
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-var uuid = Uuid();
+var uuid = const Uuid();
 
 Future<String> loadUserId() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-  var userId;
+  dynamic userId;
   if (sharedPreferences.containsKey("userId")) {
     userId = sharedPreferences.getString("userId"); // Corrected key
   } else {

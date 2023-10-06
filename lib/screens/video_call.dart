@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liviso_flutter/main.dart';
-import 'package:liviso_flutter/screens/homeScrn.dart';
-import 'package:liviso_flutter/screens/profileScrn.dart';
+import 'package:liviso_flutter/screens/home_scrn.dart';
+import 'package:liviso_flutter/screens/profile_scrn.dart';
 import 'package:liviso_flutter/utils/colors.dart';
 import 'package:liviso_flutter/widgets/bottom_navigation.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:zego_uikit_prebuilt_video_conference/zego_uikit_prebuilt_video_conference.dart';
 
@@ -25,22 +26,36 @@ class VideoCallScreen extends StatefulWidget {
 }
 
 class _VideoCallScreenState extends State<VideoCallScreen> {
+  
+
+  
   int selectedIndex = 1;
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index) async {
     setState(() {
       selectedIndex = index;
     });
 
     if (selectedIndex == 0) {
+     UserIdProvider userIdProvider = context.read<UserIdProvider>();
+     String userId = userIdProvider.userId ;
+
+     final responsed = await  http.get(Uri.parse(
+       'https://stealth-zys3.onrender.com/api/v1/video/getCalls?roomName=${widget.roomName}&id=$userId')); 
+       print("Calls added")  ;
+
+      
+
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => HomeScreen1(
-          id: "",
+          id: userId,
         ),
       ));
     } else if (selectedIndex == 2) {
+       UserIdProvider userIdProvider = context.read<UserIdProvider>();
+     String userId = userIdProvider.userId ;
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => ProfileScreen(
-          user_id: "",
+          userId: userId,
         ),
       ));
     } else {

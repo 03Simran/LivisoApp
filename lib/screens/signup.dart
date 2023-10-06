@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:liviso_flutter/screens/addprofile.dart';
+import 'package:liviso_flutter/screens/add_profile.dart';
 import 'package:liviso_flutter/utils/colors.dart';
-import 'package:liviso_flutter/widgets/loginWidgets.dart';
+import 'package:liviso_flutter/widgets/login_widgets.dart';
 import 'package:liviso_flutter/screens/login.dart';
 
 
@@ -25,7 +25,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
 
-   late final String user_id;
+   late final String userId;
   
    bool isLoading = false;
   final TextEditingController phoneTextController = TextEditingController();
@@ -100,18 +100,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
           final Map<String, dynamic> responseBody = json.decode(response.body);
           
           ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(content: Text('SignUp Successful Password has been sent to your mail')),
+         const SnackBar(content: Text('SignUp Successful')),
          );
 
           if (kDebugMode) {
             print('Sign Up Successful');
           }
-          user_id= responseBody['userId'];
+          userId= responseBody['userId'];
           
 
            Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => AddProfileScrn(id: user_id,),
+              builder: (context) => AddProfileScrn(id: userId,),
             ),
           );
           
@@ -125,7 +125,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
          );
 
 
-          print('Failed to send profile data. Status code: ${response.body}');
+          if (kDebugMode) {
+            print('Failed to send profile data. Status code: ${response.body}');
+          }
         }
       } catch (e) {
         setState(() {
@@ -134,7 +136,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
          const SnackBar(content: Text('An error occured. Try Again')),
          );
-        print('Error sending profile data: $e');
+        if (kDebugMode) {
+          print('Error sending profile data: $e');
+        }
         
       }
     }
@@ -199,7 +203,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             
            Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => LoginScreen(),
+              builder: (context) => const LoginScreen(),
             ) );
                           },
                           child: Text(

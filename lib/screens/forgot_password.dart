@@ -9,8 +9,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:liviso_flutter/main.dart';
-import 'package:liviso_flutter/screens/forgot_password.dart';
 import 'package:liviso_flutter/screens/home_scrn.dart';
+import 'package:liviso_flutter/screens/login.dart';
 import 'package:liviso_flutter/screens/signup.dart';
 import 'package:liviso_flutter/services/service_notification.dart';
 import 'package:liviso_flutter/utils/colors.dart';
@@ -18,49 +18,33 @@ import 'package:liviso_flutter/widgets/login_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatefulWidget {
-  static final GlobalKey<FormState> loginKey = GlobalKey<FormState>();
+class ForgotPasswordScrn extends StatefulWidget {
+  static final GlobalKey<FormState> fgtPswdKey = GlobalKey<FormState>();
+  
 
-  const LoginScreen({Key? key}) : super(key: key);
+  const ForgotPasswordScrn({ Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreen();
+  State<ForgotPasswordScrn> createState() => _ForgotPasswordScrn();
 }
 
-class _LoginScreen extends State<LoginScreen> {
-  NotificationServices notificationService = NotificationServices();
-
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  String? token = '';
+class _ForgotPasswordScrn extends State<ForgotPasswordScrn> {
+  
   bool isLoading = false;
-  late final String userId;
   TextEditingController phoneTextController = TextEditingController();
   TextEditingController passwordTextController = TextEditingController();
+  
 
   @override
   void initState() {
     super.initState();
-    notificationService.fireBaseInit(context);
-     notificationService.setUpInteractMessage(context);
-     notificationService.getDeviceToken().then((value){
-       if (kDebugMode) {
-         print("Device Token Login screen");
-       }
-       setState(() {
-         token= value;
-       });
-       if (kDebugMode) {
-         print(token);
-       }
-     });
   }
 
   final RegExp phoneRegex = RegExp(r'^[0-9]{10}$');
   final RegExp passwordRegex =
       RegExp(r'^(?=.*[a-zA-Z0-9!@#$%^&*()-_=+{}\[\]|;:",.<>?]).{4,}$');
 
-  String? validateEmail(String? value) {
+  String? validatePhone(String? value) {
     if (value!.isEmpty || !phoneRegex.hasMatch(value)) {
       return "Enter valid phone number";
     } else {
@@ -76,24 +60,9 @@ class _LoginScreen extends State<LoginScreen> {
     }
   }
 
-  // Future<String?> getDeviceToken() async {
-  //   String? tokenPhone = await messaging.getToken();
-  //   setState(() {
-  //     token = tokenPhone;
-  //   });
 
-  //   return token;
-  // }
-
-  // void isTokenRefresh(){
-  //   messaging.onTokenRefresh.listen ((event){
-  //     event.toString();
-  //     print("refreshToken");
-  //   });
-  // }
-
-  Future<void> _login() async {
-    if (LoginScreen.loginKey.currentState!.validate()) {
+  Future<void> _sendPassword() async {
+    if (ForgotPasswordScrn.fgtPswdKey.currentState!.validate()) {
       setState(() {
         isLoading = true;
       });
@@ -108,34 +77,18 @@ class _LoginScreen extends State<LoginScreen> {
         return; // Don't proceed with the API call.
       }
 
-      notificationService.getDeviceToken().then((value) {
-        if (kDebugMode) {
-          print("Device Token");
-          
-
-        print(token);
-        }
-
-         
-      });
-
       final Map<String, dynamic> data = {
         "phone": phone,
         "password": password,
-        "token": token
 
       };
-       if(kDebugMode)
-      {print("LOGIN SCREEN TOKEN");
-        print(token);}
-      
 
       final String jsonData = jsonEncode(data);
 
       try {
         
         final response = await http.post(
-          Uri.parse('https://stealth-zys3.onrender.com/api/v1/auth/login'),
+          Uri.parse('https://stealth-zys3.onrender.com/api/v1/auth/forget-password'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -150,27 +103,15 @@ class _LoginScreen extends State<LoginScreen> {
           });
           
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(responseBody['message'])),
+            SnackBar(content: Text("Password Reset")),
           );
-
-          userId = responseBody['userId'];
           if (kDebugMode) {
             print(response.body);
           }
-          //print(token);
-          UserIdProvider userIdProvider = context.read<UserIdProvider>();
-          userIdProvider.userId = userId;
-
-          final SharedPreferences shared_preferences =
-              await SharedPreferences.getInstance();
-          shared_preferences.setString('userId', userId);
-          
 
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => HomeScreen1(
-                id: userId,
-              ),
+              builder: (context) => LoginScreen()
             ),
           );
         } else if (response.statusCode == 400) {
@@ -213,7 +154,7 @@ class _LoginScreen extends State<LoginScreen> {
           padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 0),
           child: SingleChildScrollView(
             child: Form(
-              key: LoginScreen.loginKey,
+              key: ForgotPasswordScrn.fgtPswdKey,
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -225,14 +166,14 @@ class _LoginScreen extends State<LoginScreen> {
                     SizedBox(
                       height: 45.h,
                     ),
-                    const TextHd(text: 'Login'),
+                    const TextHd(text: 'Reset Password'),
                     SizedBox(height: 48.h),
                     FormFields(
                       label: 'Phone',
                       hint: '99999999999',
                       enabled: true,
                       controller: phoneTextController,
-                      validateFunction: validateEmail,
+                      validateFunction: validatePhone,
                     ),
                     SizedBox(
                       height: 25.h,
@@ -247,58 +188,52 @@ class _LoginScreen extends State<LoginScreen> {
                     SizedBox(
                       height: 15.h,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      //crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                         TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => const ForgotPasswordScrn(),
-                                ),
-                              );
-                            },
-                            child: Text('Forgot Password?',
-                                 style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        fontSize: 16.sp,
-                                       color: ThemeColors.primaryColor)))),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.end,
+                    //   //crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //      TextButton(
+                    //         onPressed: () {},
+                    //         child: Text('Forgot Password?',
+                    //              style: GoogleFonts.poppins(
+                    //                 textStyle: TextStyle(
+                    //                     fontSize: 16.sp,
+                    //                    color: ThemeColors.primaryColor)))),
+                    //   ],
+                    // ),
                     SizedBox(
                       height: 96.h,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      //crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Don\'t have an accout?',
-                            style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                    fontSize: 16.sp,
-                                    color: ThemeColors.primaryColor))),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => const SignUpScreen(),
-                                ),
-                              );
-                            },
-                            child: Text('SignUp',
-                                style: GoogleFonts.poppins(
-                                    textStyle: TextStyle(
-                                        fontSize: 16.sp,
-                                        color: ThemeColors.primaryColor)))),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   //crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     Text('Don\'t have an accout?',
+                    //         style: GoogleFonts.poppins(
+                    //             textStyle: TextStyle(
+                    //                 fontSize: 16.sp,
+                    //                 color: ThemeColors.primaryColor))),
+                    //     TextButton(
+                    //         onPressed: () {
+                    //           Navigator.of(context).pushReplacement(
+                    //             MaterialPageRoute(
+                    //               builder: (context) => const SignUpScreen(),
+                    //             ),
+                    //           );
+                    //         },
+                    //         child: Text('SignUp',
+                    //             style: GoogleFonts.poppins(
+                    //                 textStyle: TextStyle(
+                    //                     fontSize: 16.sp,
+                    //                     color: ThemeColors.primaryColor)))),
+                    //   ],
+                    // ),
                     SizedBox(
                       height: 10.h,
                     ),
                     !isLoading
                         ? ButtonMain(
-                            enabled: true, label: 'Proceed', onPressed: _login)
+                            enabled: true, label: 'Reset Password', onPressed: _sendPassword)
                         : SizedBox(
                             width: 310.w,
                             height: 50.h,
@@ -317,29 +252,29 @@ class _LoginScreen extends State<LoginScreen> {
                     SizedBox(
                       height: 5.h,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      //crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('By clicking, I accept the ',
-                            style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                              fontSize: 10.sp,
-                            ))),
-                        const ExternalLink(
-                            text: 'Priavcy Policy',
-                            link: 'https://www.google.com/'),
-                        Text(' and ',
-                            style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                              fontSize: 10.sp,
-                            ))),
-                        const ExternalLink(
-                            text: 'Terms and Conditions',
-                            link: 'https://www.google.com/')
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   mainAxisSize: MainAxisSize.min,
+                    //   //crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     Text('By clicking, I accept the ',
+                    //         style: GoogleFonts.poppins(
+                    //             textStyle: TextStyle(
+                    //           fontSize: 10.sp,
+                    //         ))),
+                    //     const ExternalLink(
+                    //         text: 'Priavcy Policy',
+                    //         link: 'https://www.google.com/'),
+                    //     Text(' and ',
+                    //         style: GoogleFonts.poppins(
+                    //             textStyle: TextStyle(
+                    //           fontSize: 10.sp,
+                    //         ))),
+                    //     const ExternalLink(
+                    //         text: 'Terms and Conditions',
+                    //         link: 'https://www.google.com/')
+                    //   ],
+                    // ),
                     SizedBox(height: 50.h)
                   ]),
             ),

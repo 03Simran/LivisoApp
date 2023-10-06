@@ -1,16 +1,17 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:liviso_flutter/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:liviso_flutter/screens/homeScrn.dart';
+import 'package:liviso_flutter/screens/home_scrn.dart';
 import 'package:liviso_flutter/screens/login.dart';
 
-import 'package:liviso_flutter/widgets/loginWidgets.dart';
+
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 
 String? finalId ="";
 
@@ -30,7 +31,9 @@ class _SplashScreenState extends State<SplashScreen> {
     setState(() {
       finalId = obtainedId;
     });
-    print(finalId);
+    if (kDebugMode) {
+      print(finalId);
+    }
   }
   @override
 
@@ -41,7 +44,8 @@ class _SplashScreenState extends State<SplashScreen> {
         builder: (context)=> 
         (finalId == "" || finalId ==null)
         ? LoginScreen()
-        :HomeScreen1(id: finalId!)
+        : //LoginScreen()
+        HomeScreen1(id: finalId!)
       ));
     });
     });

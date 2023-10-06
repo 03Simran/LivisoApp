@@ -1,12 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:liviso_flutter/screens/homeScrn.dart';
+
 import 'package:liviso_flutter/screens/signup.dart';
 import 'package:liviso_flutter/utils/colors.dart';
-import 'package:liviso_flutter/widgets/loginWidgets.dart';
+import 'package:liviso_flutter/widgets/login_widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:liviso_flutter/screens/login.dart';
 
@@ -15,8 +18,8 @@ class AddProfileScrn extends StatefulWidget {
 static final GlobalKey<FormState> profileKey = GlobalKey<FormState>();
   final String id;
   const AddProfileScrn
-({required this.id,
-      Key? key});
+({super.key, required this.id,
+      });
 
   @override
   State<AddProfileScrn
@@ -67,7 +70,9 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
       };
 
       final String jsonData = jsonEncode(data);
-      print(widget.id);
+      if (kDebugMode) {
+        print(widget.id);
+      }
 
       try {
         final response = await http.post(
@@ -79,12 +84,14 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
         );
 
         if (response.statusCode == 200) {
-          print('Profile data sent successfully.');
+          if (kDebugMode) {
+            print('Profile data sent successfully.');
+          }
            setState(() {
              isLoading= false;
            });
            ScaffoldMessenger.of(context).showSnackBar(
-         const SnackBar(content: Text('Profile Saved Successfully')),
+         const SnackBar(content: Text('Login Password has been sent to your email')),
          );
           
            Navigator.of(context).pushReplacement(
@@ -97,7 +104,9 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
            setState(() {
              isLoading= false;
            });
-          print('Failed to send profile data. Status code: ${response.body}');
+          if (kDebugMode) {
+            print('Failed to send profile data. Status code: ${response.body}');
+          }
         }
       } catch (e) {
        setState(() {
@@ -106,7 +115,9 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
        ScaffoldMessenger.of(context).showSnackBar(
          const SnackBar(content: Text('An error occured. Try Again')),
          );
-        print('Error sending profile data: $e');
+        if (kDebugMode) {
+          print('Error sending profile data: $e');
+        }
       }
     }
   }
@@ -130,7 +141,7 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
                   children: [
                   SizedBox(height : 80.h),
                   
-                  TextHd(text: 'Complete the profile'),
+                  const TextHd(text: 'Complete the profile'),
 
                   SizedBox(height : 40.h),
                      FormFields(label: 'Company Name', hint: 'XYZ ', enabled: true, controller: comNameController, validateFunction:validateRequiredvalues ),
@@ -143,10 +154,11 @@ class _AddProfileScrnState extends State<AddProfileScrn> {
                       TextButton(
                           onPressed: () {
                             
-           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => SignUpScreen(),
-            ) );
+                            
+          //  Navigator.of(context).pushReplacement(
+          //   MaterialPageRoute(
+          //     builder: (context) => const SignUpScreen(),
+          //   ) );
                           },
                           child: Text(
                             'Back to SignUp',

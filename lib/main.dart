@@ -1,10 +1,12 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:liviso_flutter/screens/homeScrn.dart';
+import 'package:liviso_flutter/providers/call_history_provider.dart';
+import 'package:liviso_flutter/screens/home_scrn.dart';
 import 'package:liviso_flutter/screens/splash.dart';
 import 'package:liviso_flutter/utils/colors.dart';
 import 'package:provider/provider.dart';
@@ -25,25 +27,28 @@ import 'package:provider/provider.dart';
 
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_fireBaseMessagingbackgroundHandler);
+
   runApp(
-MultiProvider(
+    MultiProvider(
       providers: [
         ChangeNotifierProvider<UserIdProvider>(create: (_) => UserIdProvider()),
+        //ChangeNotifierProvider<CallHistoryProvider>(create: (_) => CallHistoryProvider()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
-   
   );
 }
+
 
 @pragma('vm:entry--point')
 Future<void> _fireBaseMessagingbackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print(message.notification!.title.toString());   
+  if (kDebugMode) {
+    print(message.notification!.title.toString());
+  }   
 }
 
 final ThemeData themeData = ThemeData(
@@ -57,7 +62,7 @@ final ThemeData themeData = ThemeData(
 
 class MyApp extends StatelessWidget {
   
-  MyApp({super.key});
+ const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -71,7 +76,7 @@ class MyApp extends StatelessWidget {
             theme: themeData,
             navigatorKey: HomeScreen1.navigatorKey,  
              debugShowCheckedModeBanner: false,
-             home : SplashScreen(),
+             home : const SplashScreen(),
           );
         }, );
     

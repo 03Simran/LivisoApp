@@ -1,27 +1,30 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liviso_flutter/main.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:liviso_flutter/models/profile_data.dart';
-import 'package:liviso_flutter/screens/homeScrn.dart';
+import 'package:liviso_flutter/screens/home_scrn.dart';
 import 'package:liviso_flutter/screens/login.dart';
 import 'package:liviso_flutter/utils/colors.dart';
 import 'package:liviso_flutter/widgets/bottom_navigation.dart';
-import 'package:liviso_flutter/widgets/homeWidgets.dart';
+
 import 'package:http/http.dart' as http;
-import 'package:liviso_flutter/widgets/loginWidgets.dart';
-import 'package:liviso_flutter/widgets/profileWidget.dart';
+import 'package:liviso_flutter/widgets/login_widgets.dart';
+import 'package:liviso_flutter/widgets/profile_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
 class ProfileScreen extends StatefulWidget {
-  final String user_id ;
-  const ProfileScreen({  required this.user_id, Key? key}) : super(key: key);
+  final String userId ;
+  const ProfileScreen({  required this.userId, Key? key}) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -39,13 +42,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if(selectedIndex == 0){
       Navigator.of(context).push(
                            MaterialPageRoute(
-                            builder: (context) => HomeScreen1(id : widget.user_id,),
+                            builder: (context) => HomeScreen1(id : widget.userId,),
                            ));
     }
     else if(selectedIndex == 2){
      Navigator.of(context).push(
                            MaterialPageRoute(
-                            builder: (context) => ProfileScreen(user_id : widget.user_id,),
+                            builder: (context) => ProfileScreen(userId : widget.userId,),
                            ));
     }
     else{
@@ -59,13 +62,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       String userId; 
 
-      if(widget.user_id == null){
+      if(widget.userId == ""){
         
         UserIdProvider userIdProvider = context.read<UserIdProvider>();
         userId = userIdProvider.userId;
       }
       else{
-        userId = widget.user_id;
+        userId = widget.userId;
       }
          final response = await http.post(
                         Uri.parse(
@@ -76,15 +79,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
 
                       if (response.statusCode == 200) {
-                        print("Value CHANGED");
+                        if (kDebugMode) {
+                          print("Value CHANGED");
+                        }
                         setState(() {
                           profileData = fetchProfileData();
                         });
                       } else {
-                        print("SOME ERROR");
+                        if (kDebugMode) {
+                          print("SOME ERROR");
+                        }
                       }
                     } catch (error) {
-                      print('eXCEPTION');
+                      if (kDebugMode) {
+                        print('eXCEPTION');
+                      }
      }
   }
 
@@ -92,26 +101,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
   
   Future<ProfileData> fetchProfileData() async {
   try {
-     String userId; 
+     String userId = widget.userId ; 
 
-      if(widget.user_id == null){
+      if(widget.userId == ""){
         
         UserIdProvider userIdProvider = context.read<UserIdProvider>();
-        userId = userIdProvider.userId;
+        userId = userIdProvider.userId ;
       }
       else{
-        userId = widget.user_id;
+        userId = widget.userId;
       }
     final response = await http.get(Uri.parse('https://stealth-zys3.onrender.com/api/v1/auth/getProfile/$userId'));
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       return ProfileData.fromJson(data["user"]);
     } else {
-      print('API Request Failed with Status Code: ${response.statusCode}');
+      if (kDebugMode) {
+        print('API Request Failed with Status Code: ${response.statusCode}');
+      }
       throw Exception('Failed to load profile data : ${response.statusCode}');
     }
   } catch (error) {
-    print('Error fetching profile data: $error');
+    if (kDebugMode) {
+      print('Error fetching profile data: $error');
+    }
     throw Exception('Failed to load profile data: $error');
   }
 }
@@ -120,8 +133,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    print(widget.user_id);
-    if(widget.user_id != null){
+    if (kDebugMode) {
+      print(widget.userId);
+    }
+    if(widget.userId != ""){
         profileData = fetchProfileData(); 
     }
     
@@ -132,10 +147,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     sharedPreferences.remove('userId');
     Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => LoginScreen(),
+              builder: (context) => const LoginScreen(),   
             ),
 
           );
+      
   }
 
   @override
@@ -157,7 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               // While waiting for the API response, show a loading indicator
-              return Center(child: CircularProgressIndicator(
+              return const Center(child: CircularProgressIndicator(
                 color: ThemeColors.primaryColor,
               ));
             } else if (snapshot.hasError) {
@@ -165,14 +181,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               return Text('Error: ${snapshot.error}');
             } else if (!snapshot.hasData) {
               // If no data is available, you can display an appropriate message
-              return Text('No profile data available.');
+              return const Text('No profile data available.');
             } else {
               // If data is available, display it using your ProfileWidget
               final profile = snapshot.data!;
 
               return Container(
                 color: ThemeColors.backgroundColor,
-                padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
+                padding: const EdgeInsets.fromLTRB(15, 20, 15, 20),
                 child: Container(
                   height: double.infinity,
                   width: double.infinity,
@@ -186,18 +202,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                     
                           
-                          SizedBox(height: 30),
-                          ProfileWidget(label: 'Name',param : 'name' ,initialValue: profile.name,isShopLink: false, id : widget.user_id,onSave: onSave,),
-                          ProfileWidget(label: 'Phone', param : 'phone', initialValue: profile.phone,isShopLink: false,id : widget.user_id,onSave: onSave),
+                          const SizedBox(height: 30),
+                          ProfileWidget(label: 'Name',param : 'name' ,initialValue: profile.name,isShopLink: false, id : widget.userId,onSave: onSave,),
+                          ProfileWidget(label: 'Phone', param : 'phone', initialValue: profile.phone,isShopLink: false,id : widget.userId,onSave: onSave),
                     
-                          ProfileWidget(label: 'Email', param : 'email', initialValue: profile.email,isShopLink: false,id : widget.user_id,onSave: onSave),
-                          ProfileWidget(label: 'Shop Name', param : 'shopName', initialValue: profile.shopName,isShopLink: false,id : widget.user_id,onSave: onSave),
-                          ProfileWidget(label: 'Website Link', param : 'webLink',initialValue: profile.webLink,isShopLink: false,id : widget.user_id,onSave: onSave),
-                          ProfileWidget(label: 'Social Media Link',param : 'socialLink', initialValue: profile.socialLink,isShopLink: false,id : widget.user_id,onSave: onSave),
+                          ProfileWidget(label: 'Email', param : 'email', initialValue: profile.email,isShopLink: false,id : widget.userId,onSave: onSave),
+                          ProfileWidget(label: 'Shop Name', param : 'shopName', initialValue: profile.shopName,isShopLink: false,id : widget.userId,onSave: onSave),
+                          ProfileWidget(label: 'Website Link', param : 'webLink',initialValue: profile.webLink,isShopLink: false,id : widget.userId,onSave: onSave),
+                          ProfileWidget(label: 'Social Media Link',param : 'socialLink', initialValue: profile.socialLink,isShopLink: false,id : widget.userId,onSave: onSave),
 
-                          ProfileWidget(label: 'Shop Link',param :'shopLink' ,initialValue: profile.shopLink,isShopLink: true,id : widget.user_id,onSave: onSave),
+                          ProfileWidget(label: 'Shop Link',param :'shopLink' ,initialValue: profile.shopLink,isShopLink: true,id : widget.userId,onSave: onSave),
                             
-                          SizedBox(height: 30),
+                          const SizedBox(height: 30),
                           ButtonMain(enabled: true, label: "Logout", onPressed: _logout)
                           
                         

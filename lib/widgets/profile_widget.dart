@@ -2,11 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:http/http.dart' as http;
-
 import '../utils/colors.dart';
-import 'package:liviso_flutter/widgets/room.dart';
+import 'package:liviso_flutter/widgets/copy_button.dart';
+
+
 
 class ProfileWidget extends StatefulWidget {
   final String label;
@@ -33,7 +32,7 @@ class ProfileWidget extends StatefulWidget {
 class _ProfileWidgetState extends State<ProfileWidget> {
 
   bool isEditing = false;
-  late TextEditingController textEditingController;
+  late TextEditingController textEditingController = TextEditingController();
   late String editedText;
 
   
@@ -104,7 +103,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       fontWeight: FontWeight.w500
                     )
                     ),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                 
                     ),
                     onChanged: (value) {
@@ -123,11 +122,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 )),
                 
 
-                Spacer(),
+                const Spacer(),
                 Center(child: 
                 widget.isShopLink ?
                 CopyTextButton(
-
+                 widget.initialValue
                 )
                 : isEditing 
                 ? IconButton(
@@ -137,14 +136,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       isEditing=false;
                     });
                   }, icon:
-                 Icon(Icons.save, size: 15,))
+                 const Icon(Icons.save, size: 15,))
 
                  : IconButton(onPressed: (){
                   setState(() {
                     isEditing = true;
                   });
                  },
-                  icon: Icon(Icons.edit, size: 15,))
+                  icon: const Icon(Icons.edit, size: 15,))
                  )
                  
               ],

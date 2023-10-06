@@ -1,44 +1,50 @@
 
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/colors.dart';
 
 class CallHistoryData {
-  final String token;
+ 
   final String roomName;
   final int cusNumber;
   final String date;
-  final bool isNotified;
   final bool isRejected;
   final bool isAccepted;
   final String phone;
-  final String duration = "";
+  final String duration ;
+  final String feedback;
+  final String emoji;
+  final String userId;
+
 
   CallHistoryData({
-    required this.token,
+    required this.userId,
+   
     required this.roomName,
     required this.cusNumber,
     required this.date,
-    required this.isNotified,
     required this.isRejected,
     required this.isAccepted,
     required this.phone,
+    required this.feedback,
+    required this.emoji,
+    required this.duration
  
   });
 
   factory CallHistoryData.fromJson(Map<String, dynamic> json) {
     return CallHistoryData(
-      token: json['token'],
       roomName: json['roomName'],
       cusNumber: json['cusNumber'],
       date: json['date'],
-      isNotified: json['isNotified'],
       isRejected: json['isRejected'],
       isAccepted: json['isAccepted'],
       phone : json['phone'],
+      userId: json['userId'],
+      feedback: json['feedback'],
+      emoji: json['emoji'],
+      duration : json['duration']
      
     );
   }
@@ -87,7 +93,7 @@ class _CallElementState extends State<CallElement> {
             )
           )),
            
-           Spacer(),
+          const Spacer(),
           
           Column( 
             crossAxisAlignment: CrossAxisAlignment.end,
