@@ -79,9 +79,9 @@ class NotificationServices {
   }
 
   void playRingtone() {
-      print("Playing ringtone");
-      _audioPlayer.setSource(AssetSource(r'sounds/s23-ultra.mp3'));
-     _audioPlayer.play(AssetSource(r'sounds/s23-ultra.mp3'));
+    print("Playing ringtone");
+    _audioPlayer.setSource(AssetSource(r'sounds/s23-ultra.mp3'));
+    _audioPlayer.play(AssetSource(r'sounds/s23-ultra.mp3'));
   }
 
   void stopRingtone() {
@@ -147,21 +147,36 @@ class NotificationServices {
 
   void handleMessage(BuildContext context, RemoteMessage message) {
     if (message.data["type"] == 'incomingCall') {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => IncomingCallNotification(
+      Navigator.of(context).push(
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              IncomingCallNotification(
                   incomingCall: message.data["phoneNo"],
-                  roomName: message.data["roomId"])));
-    }
-    else if (message.data["type"] == 'missedCall'){
+                  roomName: message.data["roomId"]),
+
+          //Scale Transition
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = 0.0;
+            const end = 1.0;
+            var tween = Tween(begin: begin, end: end)
+                .chain(CurveTween(curve: Curves.easeInOut));
+
+            var scaleAnimation = animation.drive(tween);
+
+            return ScaleTransition(
+              scale: scaleAnimation,
+              child: child,
+            );
+          },
+        ),
+      );
+    } else if (message.data["type"] == 'missedCall') {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => MissedCallNotification(
                   phone: message.data["phoneNo"],
-                  roomName : message.data["roomId"]
-                  )));
+                  roomName: message.data["roomId"])));
     }
   }
 
@@ -172,39 +187,26 @@ class NotificationServices {
       Uri.parse(
           'https://stealth-zys3.onrender.com/api/v1/video/manage?isAccepted=true&roomName=$roomName'),
     );
-    
 
     if (response.statusCode == 200) {
-    
-        print(response.body);
-      
-      
-    }
-    else{
+      print(response.body);
+    } else {
       print(response.statusCode);
     }
   }
 
-   void rejectCall(String roomName,bool isMissed) async {
+  void rejectCall(String roomName, bool isMissed) async {
     print("CallRejected");
     stopRingtone();
     final response = await http.post(
-      Uri.parse(
-          'https://stealth-zys3.onrender.com/api/v1/video/manage?isRejected=true&roomName=$roomName',),
-          body : {
-            "isMissed":isMissed
-          }
-    );
+        Uri.parse(
+          'https://stealth-zys3.onrender.com/api/v1/video/manage?isRejected=true&roomName=$roomName',
+        ),
+        body: {"isMissed": isMissed});
 
-
-    
     if (response.statusCode == 200) {
-     
-        print(response.body);
-      
-      
-    }
-    else{
+      print(response.body);
+    } else {
       print(response.statusCode);
     }
   }

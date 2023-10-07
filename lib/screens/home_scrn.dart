@@ -50,20 +50,42 @@ class _HomeScreen1State extends State<HomeScreen1> {
     });
 
     if (selectedIndex == 0) {
-      print("Reloaded call hisotry");
+      if (kDebugMode) {
+        print("Reloaded call hisotry");
+      }
      await _reloadCallHistory();
-
+       Navigator.popUntil(context, (route) => false);
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => HomeScreen1(
           id: widget.id,
         ),
       ));
     } else if (selectedIndex == 2) {
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => ProfileScreen(
-          userId: widget.id,
-        ),
-      ));
+      Navigator.popUntil(context, (route) => route.isFirst);
+       Navigator.of(context).push(
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  ProfileScreen(userId: widget.id),
+
+              //Slide Transition
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(1.0, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.easeInOut;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+
+                var offsetAnimation = animation.drive(tween);
+
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: child,
+                );
+              },
+            ),
+          );
     }
   }
 
@@ -77,7 +99,9 @@ class _HomeScreen1State extends State<HomeScreen1> {
     final responsed = await  http.get(Uri.parse(
        'https://stealth-zys3.onrender.com/api/v1/video/getCalls?roomName=$shopName&id=${widget.id}')); 
 
-       print("Calls added")  ;
+       if (kDebugMode) {
+         print("Calls added")  ;
+       }
 
 
       ProfileData? response = await fetchProfileData();
@@ -93,11 +117,11 @@ class _HomeScreen1State extends State<HomeScreen1> {
       
         isLoading = false;
       });
-      print(callHistoryData);
+      // print(callHistoryData);
     }
   } catch (e) {
     // Handle any errors during the reload process
-    print("Error reloading call history: $e");
+    // print("Error reloading call history: $e");
     setState(() {
       isLoading = false;
     });
@@ -135,7 +159,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
       final responsed = await  http.get(Uri.parse(
        'https://stealth-zys3.onrender.com/api/v1/video/getCalls?roomName=$shopName&id=${widget.id}')); 
 
-       print("Calls added")  ;
+      //  print("Calls added")  ;
 
 
       ProfileData? response = await fetchProfileData();
@@ -208,7 +232,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
-        print(response.body);
+        // print(response.body);
         final dynamic userData = data["user"];
 
         if (userData != null) {
@@ -441,7 +465,7 @@ class _HomeScreen1State extends State<HomeScreen1> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              '${call!.duration} sec',
+                                              '${call.duration} sec',
                                               style: GoogleFonts.poppins(
                                                 textStyle: TextStyle(
                                                   fontSize: 9.sp,

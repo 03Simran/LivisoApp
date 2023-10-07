@@ -1,25 +1,18 @@
 // ignore_for_file: must_be_immutable, use_build_context_synchronously
 
 import 'dart:convert';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:liviso_flutter/main.dart';
-import 'package:liviso_flutter/screens/home_scrn.dart';
 import 'package:liviso_flutter/screens/login.dart';
-import 'package:liviso_flutter/screens/signup.dart';
-import 'package:liviso_flutter/services/service_notification.dart';
+
 import 'package:liviso_flutter/utils/colors.dart';
 import 'package:liviso_flutter/widgets/login_widgets.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class ForgotPasswordScrn extends StatefulWidget {
-  static final GlobalKey<FormState> fgtPswdKey = GlobalKey<FormState>();
+  
   
 
   const ForgotPasswordScrn({ Key? key}) : super(key: key);
@@ -29,6 +22,7 @@ class ForgotPasswordScrn extends StatefulWidget {
 }
 
 class _ForgotPasswordScrn extends State<ForgotPasswordScrn> {
+  final GlobalKey<FormState> fgtPswdKey = GlobalKey<FormState>();
   
   bool isLoading = false;
   TextEditingController phoneTextController = TextEditingController();
@@ -62,7 +56,7 @@ class _ForgotPasswordScrn extends State<ForgotPasswordScrn> {
 
 
   Future<void> _sendPassword() async {
-    if (ForgotPasswordScrn.fgtPswdKey.currentState!.validate()) {
+    if (fgtPswdKey.currentState!.validate()) {
       setState(() {
         isLoading = true;
       });
@@ -96,24 +90,23 @@ class _ForgotPasswordScrn extends State<ForgotPasswordScrn> {
         );
 
         if (response.statusCode == 200) {
-          final Map<String, dynamic> responseBody = json.decode(response.body);
-
+          
           setState(() {
             isLoading = false;
           });
           
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Password Reset")),
+            const SnackBar(content: Text("Password Reset")),
           );
           if (kDebugMode) {
             print(response.body);
           }
 
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => LoginScreen()
-            ),
-          );
+                           MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                           ));
+          
         } else if (response.statusCode == 400) {
           final Map<String, dynamic> responseBody = json.decode(response.body);
           setState(() {
@@ -154,7 +147,7 @@ class _ForgotPasswordScrn extends State<ForgotPasswordScrn> {
           padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 0),
           child: SingleChildScrollView(
             child: Form(
-              key: ForgotPasswordScrn.fgtPswdKey,
+              key: fgtPswdKey,
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -280,5 +273,13 @@ class _ForgotPasswordScrn extends State<ForgotPasswordScrn> {
             ),
           ),
         )));
+  }
+  @override
+  void dispose() {
+    // Dispose of resources here
+    fgtPswdKey.currentState?.dispose(); // Dispose of FormState
+    phoneTextController.dispose(); // Dispose of TextEditingController
+    passwordTextController.dispose(); 
+    super.dispose();
   }
 }

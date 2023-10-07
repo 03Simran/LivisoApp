@@ -3,13 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  agora_rtc_engine
   audioplayers_windows
   awesome_notifications
-  file_selector_windows
   firebase_core
-  flutter_webrtc
-  iris_method_channel
   permission_handler_windows
   url_launcher_windows
   zego_express_engine

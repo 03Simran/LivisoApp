@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:liviso_flutter/main.dart';
 import 'package:liviso_flutter/screens/home_scrn.dart';
 import 'package:liviso_flutter/screens/video_call.dart';
-import 'package:liviso_flutter/services/service_notification.dart';
 
 import 'package:liviso_flutter/widgets/login_widgets.dart';
 import 'package:provider/provider.dart';
@@ -95,16 +94,18 @@ class IncomingCallNotification extends StatelessWidget {
                                 'https://stealth-zys3.onrender.com/api/v1/video/manage?roomName=$roomName&isAccepted=true&id=$userId&phone=$incomingCall'),
                           );
 
-                          print(incomingCall);
-                          print(userId);
-                          print(roomName);
+                          // print(incomingCall);
+                          // print(userId);
+                          // print(roomName);
 
-                          if (response.statusCode == 200) {
-                            print(response.body);
-                          } else {
-                            print(response.statusCode);
-                            print(response.body);
-                          }
+                          // if (response.statusCode == 200) {
+                          //   print(response.body);
+                          // } else {
+                          //   // print(response.statusCode);
+                          //   // print(response.body);
+                          // }
+
+                           Navigator.pop(context);
 
                           Navigator.pushReplacement(
                             context,
@@ -115,6 +116,7 @@ class IncomingCallNotification extends StatelessWidget {
                               ),
                             ),
                           );
+
                         },
                         child: CircleAvatar(
                           radius: 30.r,
@@ -138,11 +140,11 @@ class IncomingCallNotification extends StatelessWidget {
                             ),
                           );
 
-                          if (response.statusCode == 200) {
-                            print(response.body);
-                          } else {
-                            print(response.statusCode);
-                          }
+                          // if (response.statusCode == 200) {
+                          //   print(response.body);
+                          // } else {
+                          //   print(response.statusCode);
+                          // }
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,11 +40,8 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     if (selectedIndex == 0) {
      UserIdProvider userIdProvider = context.read<UserIdProvider>();
      String userId = userIdProvider.userId ;
-
-     final responsed = await  http.get(Uri.parse(
+      final responsed = await  http.get(Uri.parse(
        'https://stealth-zys3.onrender.com/api/v1/video/getCalls?roomName=${widget.roomName}&id=$userId')); 
-       print("Calls added")  ;
-
       
 
       Navigator.of(context).push(MaterialPageRoute(
@@ -94,14 +93,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                 
                   turnOnCameraWhenJoining: false,
                   onLeave: () {
-                    UserIdProvider userIdProvider = context.read<UserIdProvider>();
-                    String userId = userIdProvider.userId;
-
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => HomeScreen1(
-                        id: userId,
-                      ),
-                    ));
+                    Navigator.pop(context);
                   }),
 
                   

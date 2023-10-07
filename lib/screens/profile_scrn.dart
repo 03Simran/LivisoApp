@@ -40,13 +40,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
 
     if(selectedIndex == 0){
-      Navigator.of(context).push(
-                           MaterialPageRoute(
-                            builder: (context) => HomeScreen1(id : widget.userId,),
-                           ));
+      Navigator.popUntil(context, (route) => false);
+       Navigator.of(context).push(
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  HomeScreen1(id: widget.userId),
+
+              //Slide Transition
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(1.0, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.easeInOut;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+
+                var offsetAnimation = animation.drive(tween);
+
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: child,
+                );
+              },
+            ),
+          );
     }
     else if(selectedIndex == 2){
-     Navigator.of(context).push(
+     Navigator.of(context).pushReplacement(
                            MaterialPageRoute(
                             builder: (context) => ProfileScreen(userId : widget.userId,),
                            ));
@@ -145,13 +166,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future _logout() async{
     final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.remove('userId');
-    Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => const LoginScreen(),   
-            ),
+    
+  Navigator.popUntil(context, (route) => false); 
+  Navigator.of(context).push(
+                           MaterialPageRoute(
+                            builder: (context) => const LoginScreen()
+                           ));
 
-          );
-      
   }
 
   @override
@@ -164,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           textStyle: TextStyle(fontSize: 18.sp,
           color: ThemeColors.textColor9)
         )),
-        titleSpacing: -10.w,
+        titleSpacing: 30.w,
         elevation: sqrt1_2,
       ),
       body: SafeArea(

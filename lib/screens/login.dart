@@ -19,7 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
-  static final GlobalKey<FormState> loginKey = GlobalKey<FormState>();
+ 
 
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -28,6 +28,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreen extends State<LoginScreen> {
+  final GlobalKey<FormState> loginKey = GlobalKey<FormState>();
   NotificationServices notificationService = NotificationServices();
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -42,18 +43,18 @@ class _LoginScreen extends State<LoginScreen> {
   void initState() {
     super.initState();
     notificationService.fireBaseInit(context);
-     notificationService.setUpInteractMessage(context);
-     notificationService.getDeviceToken().then((value){
-       if (kDebugMode) {
-         print("Device Token Login screen");
-       }
-       setState(() {
-         token= value;
-       });
-       if (kDebugMode) {
-         print(token);
-       }
-     });
+    notificationService.setUpInteractMessage(context);
+    notificationService.getDeviceToken().then((value) {
+      if (kDebugMode) {
+        print("Device Token Login screen");
+      }
+      setState(() {
+        token = value;
+      });
+      if (kDebugMode) {
+        print(token);
+      }
+    });
   }
 
   final RegExp phoneRegex = RegExp(r'^[0-9]{10}$');
@@ -93,7 +94,7 @@ class _LoginScreen extends State<LoginScreen> {
   // }
 
   Future<void> _login() async {
-    if (LoginScreen.loginKey.currentState!.validate()) {
+    if (loginKey.currentState!.validate()) {
       setState(() {
         isLoading = true;
       });
@@ -111,29 +112,24 @@ class _LoginScreen extends State<LoginScreen> {
       notificationService.getDeviceToken().then((value) {
         if (kDebugMode) {
           print("Device Token");
-          
 
-        print(token);
+          print(token);
         }
-
-         
       });
 
       final Map<String, dynamic> data = {
         "phone": phone,
         "password": password,
         "token": token
-
       };
-       if(kDebugMode)
-      {print("LOGIN SCREEN TOKEN");
-        print(token);}
-      
+      if (kDebugMode) {
+        print("LOGIN SCREEN TOKEN");
+        print(token);
+      }
 
       final String jsonData = jsonEncode(data);
 
       try {
-        
         final response = await http.post(
           Uri.parse('https://stealth-zys3.onrender.com/api/v1/auth/login'),
           headers: <String, String>{
@@ -148,7 +144,7 @@ class _LoginScreen extends State<LoginScreen> {
           setState(() {
             isLoading = false;
           });
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(responseBody['message'])),
           );
@@ -164,13 +160,31 @@ class _LoginScreen extends State<LoginScreen> {
           final SharedPreferences shared_preferences =
               await SharedPreferences.getInstance();
           shared_preferences.setString('userId', userId);
-          
+
+          Navigator.popUntil(context, (route) => route.isFirst);
 
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => HomeScreen1(
-                id: userId,
-              ),
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  HomeScreen1(id: userId),
+
+              //Slide Transition
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                const begin = Offset(1.0, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.easeInOut;
+
+                var tween = Tween(begin: begin, end: end)
+                    .chain(CurveTween(curve: curve));
+
+                var offsetAnimation = animation.drive(tween);
+
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: child,
+                );
+              },
             ),
           );
         } else if (response.statusCode == 400) {
@@ -213,17 +227,20 @@ class _LoginScreen extends State<LoginScreen> {
           padding: EdgeInsets.symmetric(horizontal: 23.w, vertical: 0),
           child: SingleChildScrollView(
             child: Form(
-              key: LoginScreen.loginKey,
+              key: loginKey,
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
-                      height: 110.h,
+                      height: 120.h,
                     ),
-                    Logo(height: 100.h,width: 200.w,),
+                    Logo(
+                      height: 100.h,
+                      width: 200.w,
+                    ),
                     SizedBox(
-                      height: 45.h,
+                      height: 40.h,
                     ),
                     const TextHd(text: 'Login'),
                     SizedBox(height: 48.h),
@@ -245,25 +262,46 @@ class _LoginScreen extends State<LoginScreen> {
                       validateFunction: validatePassword,
                     ),
                     SizedBox(
-                      height: 15.h,
+                      height: 10.h,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       //crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                         TextButton(
+                        TextButton(
                             onPressed: () {
                               Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => const ForgotPasswordScrn(),
+                                PageRouteBuilder(
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
+                                      const ForgotPasswordScrn(),
+
+                                  //Scale Transition
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    const begin = Offset(1.0, 0.0);
+                                    const end = Offset.zero;
+                                    const curve = Curves.easeInOut;
+
+                                    var tween = Tween(begin: begin, end: end)
+                                        .chain(CurveTween(curve: curve));
+
+                                    var offsetAnimation =
+                                        animation.drive(tween);
+
+                                    return SlideTransition(
+                                      position: offsetAnimation,
+                                      child: child,
+                                    );
+                                  },
                                 ),
                               );
                             },
                             child: Text('Forgot Password?',
-                                 style: GoogleFonts.poppins(
+                                style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
                                         fontSize: 16.sp,
-                                       color: ThemeColors.primaryColor)))),
+                                        color: ThemeColors.primaryColor)))),
                       ],
                     ),
                     SizedBox(
@@ -345,5 +383,13 @@ class _LoginScreen extends State<LoginScreen> {
             ),
           ),
         )));
+  }
+  @override
+  void dispose() {
+    // Dispose of resources here
+    loginKey.currentState?.dispose(); // Dispose of FormState
+    phoneTextController.dispose(); // Dispose of TextEditingController
+    passwordTextController.dispose(); 
+    super.dispose();
   }
 }
