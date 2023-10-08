@@ -83,9 +83,9 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.r)),
             child: ZegoUIKitPrebuiltVideoConference(
               appID:
-                  1237771667, // Fill in the appID that you get from ZEGOCLOUD Admin Console.
+                  1562799679, // Fill in the appID that you get from ZEGOCLOUD Admin Console.
               appSign:
-                  '3dcf6738b89de0a75da57243e1d1b6438ff26cbcd479c5a1eb79b3681f996c36', // Fill in the appSign that you get from ZEGOCLOUD Admin Console.
+                  '3d31619f0906a901988db08044d66fa7fa545c1d17b1286ebe8cccfcfebadcbf', // Fill in the appSign that you get from ZEGOCLOUD Admin Console.
               userID: widget.roomName,
               userName: widget.roomName,
               conferenceID: widget.callID,
